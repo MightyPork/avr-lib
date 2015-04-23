@@ -15,7 +15,7 @@ Some library files don't have `.c`, but many do.
 ## Useful things
 
 - To easily alias I/O pins, use `lib/pins.h`.
-- For Arduino pins, there are presets in `lib/arduino-pins.h`
+- For Arduino pins, there are presets in `lib/arduino_pins.h`
 - Binary/byte manipulation utilities are in `lib/calc.h`
 - `lib/meta.h` contains some generally useful things that didn't fit elsewhere
 
