@@ -1,8 +1,8 @@
 #pragma once
 
-/*
-  Utilities for build-in A/D converter
-*/
+//
+// Utilities for build-in A/D converter
+//
 
 #include <avr/io.h>
 

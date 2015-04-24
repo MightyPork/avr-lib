@@ -1,8 +1,8 @@
 #pragma once
 
-/**
-  Functions for precise delays (nanoseconds / cycles)
-*/
+//
+// Functions for precise delays (nanoseconds / cycles)
+//
 
 #include <avr/io.h>
 #include <util/delay_basic.h>

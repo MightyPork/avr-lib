@@ -1,37 +1,38 @@
 #pragma once
 
-/**
-  An implementation of button debouncer.
+//
+//  An implementation of button debouncer.
+//
+//  ----
+//
+//  You must provide a config file debo_config.h (next to your main.c)
+//
+//  Example:
+//    #pragma once
+//    #define DEBO_CHANNELS 2
+//    #define DDEBO_TICKS 5
+//
+//  ----
+//
+//  A pin is registered like this:
+//
+//    #define BTN1 B,0
+//    #define BTN2 B,1
+//
+//    debo_add(BTN0);  // The function returns number assigned to the pin (0, 1, ...)
+//    debo_add_rev(BTN1);  // active low
+//    debo_register(&PINB, PB2, 0);  // direct access - register, pin & invert
+//
+//  Then periodically call the tick function (perhaps in a timer interrupt):
+//
+//    debo_tick();
+//
+//  To check if input is active, use
+//
+//    debo_get_pin(0); // state of input #0 (registered first)
+//    debo_get_pin(1); // state of input #1 (registered second)
+//
 
-  ----
-
-  You must provide a config file debo_config.h (next to your main.c)
-
-  Example:
-    #pragma once
-    #define DEBO_CHANNELS 2
-    #define DDEBO_TICKS 5
-
-  ----
-
-  A pin is registered like this:
-
-    #define BTN1 B,0
-    #define BTN2 B,1
-
-    debo_add(BTN0);  // The function returns number assigned to the pin (0, 1, ...)
-    debo_add_rev(BTN1);  // active low
-    debo_register(&PINB, PB2, 0);  // direct access - register, pin & invert
-
-  Then periodically call the tick function (perhaps in a timer interrupt):
-
-    debo_tick();
-
-  To check if input is active, use
-
-    debo_get_pin(0); // state of input #0 (registered first)
-    debo_get_pin(1); // state of input #1 (registered second)
-*/
 
 #include <avr/io.h>
 #include <stdbool.h>

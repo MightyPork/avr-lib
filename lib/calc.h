@@ -1,8 +1,8 @@
 #pragma once
 
-/**
-  Bit and byte manipulation utilities
-*/
+//
+// Bit and byte manipulation utilities
+//
 
 
 // --- Increment in range ---

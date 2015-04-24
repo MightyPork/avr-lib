@@ -1,24 +1,22 @@
 #pragma once
 
-/*
-  HD44780 LCD display driver - 4-bit mode
-
-  LCD pins are configured using a file lcd_config.h, which you
-  have to add next to your main.c file.
-
-  Content can be something like this:
-
-    #pragma once
-    #include "lib/arduino_pins.h"
-    #define LCD_RS D10
-    #define LCD_RW D11
-    #define LCD_E  D12
-    #define LCD_D4 D13
-    #define LCD_D5 D14
-    #define LCD_D6 D15
-    #define LCD_D7 D16
-
-*/
+//  HD44780 LCD display driver - 4-bit mode
+//
+//  LCD pins are configured using a file lcd_config.h, which you
+//  have to add next to your main.c file.
+//
+//  Content can be something like this:
+//
+//    #pragma once
+//    #include "lib/arduino_pins.h"
+//    #define LCD_RS D10
+//    #define LCD_RW D11
+//    #define LCD_E  D12
+//    #define LCD_D4 D13
+//    #define LCD_D5 D14
+//    #define LCD_D6 D15
+//    #define LCD_D7 D16
+//
 
 #include <stdint.h>
 #include "lcd_config.h"

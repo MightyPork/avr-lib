@@ -1,15 +1,15 @@
 #pragma once
 
-/*
-  Some useful utilities for RGB color manipulation
-
-  The XXXc macros don't use cast, so they can be used in array initializers.
-
-  xrgb ... 3-byte true-color RGB (8 bits per component)
-  rgbXX ... XX-bit color value, with equal nr of bits per component
-
-  XX_r (_g, _b) ... extract component from the color, and convert it to 0..255
-*/
+//
+// Some useful utilities for RGB color manipulation
+//
+// The XXXc macros don't use cast, so they can be used in array initializers.
+//
+//  xrgb ... 3-byte true-color RGB (8 bits per component)
+//  rgbXX ... XX-bit color value, with equal nr of bits per component
+//
+//  XX_r (_g, _b) ... extract component from the color, and convert it to 0..255
+//
 
 
 typedef struct {

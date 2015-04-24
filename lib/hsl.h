@@ -1,8 +1,8 @@
 #pragma once
 
-/*
-  HSL support (addition to colors.h)
-*/
+//
+// HSL support (addition to colors.h)
+//
 
 #include "colors.h"
 

@@ -1,11 +1,11 @@
 #pragma once
 
-/*
-  Utilities for UART communication.
-
-  First, init uart with desired baud rate using uart_init().
-  Then, enable interrupts you want, and that's it.
-*/
+//
+// Utilities for UART communication.
+//
+// First, init uart with desired baud rate using uart_init().
+// Then, enable interrupts you want, and that's it.
+//
 
 #include <avr/io.h>
 #include <avr/pgmspace.h>

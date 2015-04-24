@@ -1,21 +1,20 @@
 #pragma once
 
-/**
-  Utils for driving a WS28xx (tested on WS2812B) RGB LED strips.
-
-  It's implemented as macros to avoid overhead when passing values, and to
-  enable driving multiple strips at once.
-
-  To avoid bloating your code, try to reduce the number of invocations -
-  compute color and then send it.
-
-  [IMPORTANT]
-
-  Some seemingly random influences can ruin the communication.
-  If you have enough memory, consider preparing the colors in array,
-  and sending this array using one of the "ws_send_XXX_array" macros.
-
-*/
+//
+//  Utils for driving a WS28xx (tested on WS2812B) RGB LED strips.
+//
+//  It's implemented as macros to avoid overhead when passing values, and to
+//  enable driving multiple strips at once.
+//
+//  To avoid bloating your code, try to reduce the number of invocations -
+//  compute color and then send it.
+//
+//  [IMPORTANT]
+//
+//  Some seemingly random influences can ruin the communication.
+//  If you have enough memory, consider preparing the colors in array,
+//  and sending this array using one of the "ws_send_XXX_array" macros.
+//
 
 #include <avr/io.h>
 

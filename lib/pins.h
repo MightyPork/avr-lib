@@ -1,30 +1,30 @@
 #pragma once
 
-/**
-  This file provides macros for pin manipulation.
-
-  You can define your application pins like so:
-
-      // Led at PORTB, pin 1
-      #define LED B,1
-
-      // Switch at PORTD, pin 7
-      #define SW1 D,7
-
-  Now you can use macros from this file to wirh with the pins, eg:
-
-      as_output(LED);
-      as_input(SW1);
-      pullup_on(SW1);
-
-      toggle_pin(LED);
-      while (pin_is_low(SW1));
-
-  - The macros io2XXX() can be used to get literal name of register associated with the pin.
-  - io2n() provides pin number.
-  - The XXX_aux() macros are internal and should not be used elsewhere.
-  - The io_pack() macro is used to pass pin (io) to other macro without expanding it.
-*/
+//
+//  This file provides macros for pin manipulation.
+//
+//  You can define your application pins like so:
+//
+//      // Led at PORTB, pin 1
+//      #define LED B,1
+//
+//      // Switch at PORTD, pin 7
+//      #define SW1 D,7
+//
+//  Now you can use macros from this file to wirh with the pins, eg:
+//
+//      as_output(LED);
+//      as_input(SW1);
+//      pullup_on(SW1);
+//
+//      toggle_pin(LED);
+//      while (pin_is_low(SW1));
+//
+//  - The macros io2XXX() can be used to get literal name of register associated with the pin.
+//  - io2n() provides pin number.
+//  - The XXX_aux() macros are internal and should not be used elsewhere.
+//  - The io_pack() macro is used to pass pin (io) to other macro without expanding it.
+//
 
 #include <avr/io.h>
 #include "calc.h"

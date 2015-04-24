@@ -1,8 +1,8 @@
 #pragma once
 
-/**
-  Custom loops
-*/
+//
+// Custom loops
+//
 
 // Repeat code n times (uint8_t counter)
 #define repeat(count) repeat_aux(count, _repeat_##__COUNTER__)

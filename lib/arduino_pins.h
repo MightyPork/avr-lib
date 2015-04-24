@@ -1,8 +1,8 @@
 #pragma once
 
-/**
-  Pin definitions for Arduino (Pro Mini with ATmega328P)
-*/
+//
+// Pin definitions for Arduino (Pro Mini with ATmega328P)
+//
 
 #include "pins.h"
 
