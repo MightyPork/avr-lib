@@ -3,8 +3,8 @@
 //
 // Utilities for UART communication.
 //
-// First, init uart with desired baud rate using uart_init().
-// Then, enable interrupts you want, and that's it.
+// First, init uart with desired baud rate using uart_init(baud).
+// Then enable interrupts you want with uart_isr_XXX().
 //
 
 #include <avr/io.h>
@@ -12,6 +12,7 @@
 #include <util/delay.h>
 #include <stdbool.h>
 #include <stdint.h>
+
 
 /** Init UART for given baudrate */
 void _uart_init_do(uint16_t ubrr); // internal, needed for the macro.
@@ -64,28 +65,34 @@ void uart_puts_pgm(const char* str);
 // Numbers
 
 /** Send unsigned int */
-void uart_puti(const int16_t num);
+void uart_put8i(const int8_t num);
 
 /** Send signed int */
-void uart_putu(const uint16_t num);
+void uart_put8u(const uint8_t num);
+
+/** Send unsigned int */
+void uart_put16i(const int16_t num);
+
+/** Send signed int */
+void uart_put16u(const uint16_t num);
 
 /** Send unsigned long */
-void uart_putlu(const uint32_t num);
+void uart_put32u(const uint32_t num);
 
 /** Send signed long */
-void uart_putl(const int32_t num);
-
-/** Send signed long as float */
-void uart_putlf(const int32_t num, const uint8_t places);
-
-/** Send unsigned long as float */
-void uart_putluf(const uint32_t num, const uint8_t places);
+void uart_put32i(const int32_t num);
 
 /** Send signed int as float */
-void uart_putif(const int16_t num, const uint8_t places);
+void uart_put16if(const int16_t num, const uint8_t places);
 
 /** Send unsigned int as float */
-void uart_putuf(const uint16_t num, const uint8_t places);
+void uart_put16uf(const uint16_t num, const uint8_t places);
+
+/** Send signed long as float */
+void uart_put32if(const int32_t num, const uint8_t places);
+
+/** Send unsigned long as float */
+void uart_put32uf(const uint32_t num, const uint8_t places);
 
 
 // Extras

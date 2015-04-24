@@ -102,9 +102,6 @@ void uart_flush()
 }
 
 
-
-
-
 /** Send CRLF */
 void uart_nl()
 {
@@ -118,24 +115,40 @@ char tmpstr[12]; // buffer for number rendering
 void _uart_putn(const uint8_t places);
 
 
-/** Send unsigned int */
-void uart_puti(const int16_t num)
+/** Send unsigned int8 */
+void uart_put8i(const int8_t num)
 {
-	ltoa(num, tmpstr, 10);
+	itoa(num, tmpstr, 10);
+	uart_puts(tmpstr);
+}
+
+
+/** Send signed int8 */
+void uart_put8u(const uint8_t num)
+{
+	itoa(num, tmpstr, 10);
+	uart_puts(tmpstr);
+}
+
+
+/** Send unsigned int */
+void uart_put16i(const int16_t num)
+{
+	itoa(num, tmpstr, 10);
 	uart_puts(tmpstr);
 }
 
 
 /** Send signed int */
-void uart_putu(const uint16_t num)
+void uart_put16u(const uint16_t num)
 {
-	ltoa(num, tmpstr, 10);
+	itoa(num, tmpstr, 10);
 	uart_puts(tmpstr);
 }
 
 
 /** Send unsigned long */
-void uart_putlu(const uint32_t num)
+void uart_put32u(const uint32_t num)
 {
 	ltoa(num, tmpstr, 10);
 	uart_puts(tmpstr);
@@ -143,7 +156,7 @@ void uart_putlu(const uint32_t num)
 
 
 /** Send signed long */
-void uart_putl(const int32_t num)
+void uart_put32i(const int32_t num)
 {
 	ltoa(num, tmpstr, 10);
 	uart_puts(tmpstr);
@@ -151,7 +164,7 @@ void uart_putl(const int32_t num)
 
 
 /** Send signed long as float */
-void uart_putlf(const int32_t num, const uint8_t places)
+void uart_put32if(const int32_t num, const uint8_t places)
 {
 	if (num < 0) {
 		uart_tx('-');
@@ -165,7 +178,7 @@ void uart_putlf(const int32_t num, const uint8_t places)
 
 
 /** Send unsigned long as float */
-void uart_putluf(const uint32_t num, const uint8_t places)
+void uart_put32uf(const uint32_t num, const uint8_t places)
 {
 	ltoa(num, tmpstr, 10);
 	_uart_putn(places);
@@ -173,7 +186,7 @@ void uart_putluf(const uint32_t num, const uint8_t places)
 
 
 /** Send signed int as float */
-void uart_putif(const int16_t num, const uint8_t places)
+void uart_put16if(const int16_t num, const uint8_t places)
 {
 	if (num < 0) {
 		uart_tx('-');
@@ -187,7 +200,7 @@ void uart_putif(const int16_t num, const uint8_t places)
 
 
 /** Send unsigned int as float */
-void uart_putuf(const uint16_t num, const uint8_t places)
+void uart_put16uf(const uint16_t num, const uint8_t places)
 {
 	ltoa(num, tmpstr, 10);
 	_uart_putn(places);
