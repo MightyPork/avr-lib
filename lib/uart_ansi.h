@@ -8,6 +8,7 @@
 //
 
 #include <avr/io.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include "uart.h"
@@ -162,3 +163,30 @@ void vt_erase_above();
 
 /** Erase screen above the line */
 void vt_erase_below();
+
+
+
+// KEY HANDLER
+
+// Special keys from key handler
+#define VK_LEFT   68
+#define VK_RIGHT  67
+#define VK_UP     65
+#define VK_DOWN   66
+#define VK_DELETE 51
+#define VK_INSERT 50
+#define VK_PGUP   53
+#define VK_PGDN   54
+#define VK_HOME   72
+#define VK_END    70
+#define VK_F1 80
+#define VK_F2 81
+#define VK_F3 82
+#define VK_F4 83
+#define VK_BACKSPACE  8
+#define VK_TAB        9
+#define VK_ENTER     13
+#define VK_ESC       27
+
+void vt_handle_key(uint8_t c);
+void vt_set_key_handler(void (*handler)(uint8_t, bool));

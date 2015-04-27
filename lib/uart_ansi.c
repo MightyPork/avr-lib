@@ -1,5 +1,6 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
+#include <avr/interrupt.h>
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -16,9 +17,9 @@ void vt_goto(uint8_t x, uint8_t y)
 {
 	uart_putc(27);
 	uart_putc('[');
-	uart_put8u(x);
+	uart_putu(x);
 	uart_putc(';');
-	uart_put8u(y);
+	uart_putu(y);
 	uart_putc('H');
 }
 
@@ -27,7 +28,7 @@ void vt_goto_x(uint8_t x)
 {
 	uart_putc(27);
 	uart_putc('[');
-	uart_put8u(x);
+	uart_putu(x);
 	uart_putc('`');
 }
 
@@ -36,7 +37,7 @@ void vt_goto_y(uint8_t y)
 {
 	uart_putc(27);
 	uart_putc('[');
-	uart_put8u(y);
+	uart_putu(y);
 	uart_putc('d');
 }
 
@@ -73,7 +74,7 @@ void vt_up(uint8_t y)
 	if (y == 0) return;
 	uart_putc(27);
 	uart_putc('[');
-	uart_put8u(y);
+	uart_putu(y);
 	uart_putc('A');
 }
 
@@ -83,7 +84,7 @@ void vt_down(uint8_t y)
 	if (y == 0) return;
 	uart_putc(27);
 	uart_putc('[');
-	uart_put8u(y);
+	uart_putu(y);
 	uart_putc('B');
 }
 
@@ -93,7 +94,7 @@ void vt_left(uint8_t x)
 	if (x == 0) return;
 	uart_putc(27);
 	uart_putc('[');
-	uart_put8u(x);
+	uart_putu(x);
 	uart_putc('D');
 }
 
@@ -103,7 +104,7 @@ void vt_right(uint8_t x)
 	if (x == 0) return;
 	uart_putc(27);
 	uart_putc('[');
-	uart_put8u(x);
+	uart_putu(x);
 	uart_putc('C');
 }
 
@@ -128,9 +129,9 @@ void vt_scroll_set(uint8_t from, uint8_t to)
 {
 	uart_putc(27);
 	uart_putc('[');
-	uart_put8u(from);
+	uart_putu(from);
 	uart_putc(';');
-	uart_put8u(to);
+	uart_putu(to);
 	uart_putc('r');
 }
 
@@ -283,9 +284,9 @@ void _vt_color_do()
 {
 	uart_putc(27);
 	uart_putc('[');
-	uart_put8u(30 + current_style.fg);
+	uart_putu(30 + current_style.fg);
 	uart_putc(';');
-	uart_put8u(40 + current_style.bg);
+	uart_putu(40 + current_style.bg);
 	uart_putc('m');
 }
 
@@ -295,7 +296,7 @@ void vt_insert_lines(uint8_t count)
 {
 	uart_putc(27);
 	uart_putc('[');
-	uart_put8u(count);
+	uart_putu(count);
 	uart_putc('L');
 }
 
@@ -305,7 +306,7 @@ void vt_delete_lines(uint8_t count)
 {
 	uart_putc(27);
 	uart_putc('[');
-	uart_put8u(count);
+	uart_putu(count);
 	uart_putc('M');
 }
 
@@ -315,7 +316,7 @@ void vt_insert_chars(uint8_t count)
 {
 	uart_putc(27);
 	uart_putc('[');
-	uart_put8u(count);
+	uart_putu(count);
 	uart_putc('@');
 }
 
@@ -325,7 +326,7 @@ void vt_delete_chars(uint8_t count)
 {
 	uart_putc(27);
 	uart_putc('[');
-	uart_put8u(count);
+	uart_putu(count);
 	uart_putc('P');
 }
 
@@ -394,4 +395,186 @@ void vt_reset()
 
 	// overwrite saved state
 	vt_save();
+}
+
+
+
+// Assigned keyhandler
+void (*_vt_kh)(uint8_t, bool) = NULL;
+
+/** Assign a key handler (later used with vt_handle_key) */
+void vt_set_key_handler(void (*handler)(uint8_t, bool))
+{
+	_vt_kh = handler;
+}
+
+
+// state machine states
+typedef enum {
+	GROUND = 0,
+	ESC = 1,
+	BR = 2,
+	O = 3,
+	WAITING_TILDE = 4
+} KSTATE;
+
+// code received before started to wait for a tilde
+uint8_t _before_wtilde;
+// current state
+KSTATE _kstate = GROUND;
+
+
+
+void _vt_kh_abort()
+{
+	switch (_kstate) {
+		case ESC:
+			_vt_kh(VK_ESC, true);
+			break;
+
+		case BR:
+			_vt_kh(VK_ESC, true);
+			_vt_kh('[', false);
+			break;
+
+		case O:
+			_vt_kh(VK_ESC, true);
+			_vt_kh('O', false);
+			break;
+
+		case WAITING_TILDE:
+			_vt_kh(VK_ESC, true);
+			_vt_kh('[', false);
+			vt_handle_key(_before_wtilde);
+			break;
+
+		case GROUND:
+			// nop
+			break;
+	}
+
+	_kstate = GROUND;
+}
+
+
+/**
+ * Handle a key received over UART
+ * Takes care of multi-byte keys and translates them to special
+ * constants.
+ */
+void vt_handle_key(uint8_t c)
+{
+	if (_vt_kh == NULL) return;
+
+	switch (_kstate) {
+		case GROUND:
+			switch (c) {
+				case 27:
+					_kstate = ESC;
+					break;
+
+				case VK_ENTER:
+				case VK_TAB:
+				case VK_BACKSPACE:
+					_vt_kh(c, true);
+					return;
+
+				default:
+					_vt_kh(c, false);
+					return;
+			}
+
+			break;  // continue to next char
+
+		case ESC:
+			switch (c) {
+				case '[':
+					_kstate = BR;
+					break; // continue to next char
+
+				case 'O':
+					_kstate = O;
+					break; // continue to next char
+
+				default:
+					// bad code
+					_vt_kh_abort();
+					vt_handle_key(c);
+					return;
+			}
+			break;
+
+		case BR:
+			switch (c) {
+				// arrows
+				case 65:
+				case 66:
+				case 67:
+				case 68:
+					_vt_kh(c, true);
+					_kstate = GROUND;
+					return;
+
+				// ins del pgup pgdn
+				case 50:
+				case 51:
+				case 53:
+				case 54:
+					// wait for terminating tilde
+					_before_wtilde = c;
+					_kstate = WAITING_TILDE;
+					break; // continue to next char
+
+				// bad key
+				default:
+					_vt_kh_abort();
+					vt_handle_key(c);
+					return;
+			}
+			break;
+
+		case O:
+			switch (c) {
+				// F keys
+				case 80:
+				case 81:
+				case 82:
+				case 83:
+				// home, end
+				case 72:
+				case 70:
+					_vt_kh(c, true);
+					_kstate = GROUND;
+					return;
+
+				// bad key
+				default:
+					_vt_kh_abort();
+					vt_handle_key(c);
+					return;
+			}
+
+		case WAITING_TILDE:
+			if (c != '~') {
+				_vt_kh_abort();
+				vt_handle_key(c);
+				return;
+			} else {
+				_vt_kh(_before_wtilde, true);
+				_kstate = GROUND;
+				return;
+			}
+	}
+
+	// wait for next key
+	if (_kstate != GROUND) {
+		_delay_ms(2);
+		if (!uart_rx_ready()) {
+			// abort receiving
+			_vt_kh_abort();
+
+		} else {
+			vt_handle_key(uart_rx());
+		}
+	}
 }
