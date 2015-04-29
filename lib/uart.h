@@ -65,10 +65,10 @@ void uart_puts_pgm(const char* str);
 // Numbers
 
 /** Send unsigned int */
-void uart_putn(const int8_t num);
+void uart_putu(const uint8_t num);
 
 /** Send signed int */
-void uart_putu(const uint8_t num);
+void uart_putn(const int8_t num);
 
 /** Send unsigned int */
 void uart_puti(const int16_t num, const uint8_t places);
@@ -76,11 +76,11 @@ void uart_puti(const int16_t num, const uint8_t places);
 /** Send signed int */
 void uart_putiu(const uint16_t num, const uint8_t places);
 
-/** Send unsigned long */
-void uart_putlu(const uint32_t num, const uint8_t places);
-
 /** Send signed long */
 void uart_putl(const int32_t num, const uint8_t places);
+
+/** Send unsigned long */
+void uart_putlu(const uint32_t num, const uint8_t places);
 
 // Extras
 
