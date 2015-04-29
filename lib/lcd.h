@@ -19,9 +19,12 @@
 //
 
 #include <stdint.h>
+#include <stdbool.h>
+
+// File with configs
 #include "lcd_config.h"
 
-// Commands
+// --- Commands ---
 
 // Clear screen (reset)
 #define LCD_CLEAR 0b00000001
@@ -70,28 +73,34 @@
 void lcd_init();
 
 /** Write an instruction byte */
-void lcd_write_command(uint8_t bb);
+void lcd_command(uint8_t bb);
 
 /** Write a data byte */
-void lcd_write_data(uint8_t bb);
+void lcd_write(uint8_t bb);
 
 /** Read BF & Address */
 uint8_t lcd_read_bf_addr();
 
 /** Read CGRAM or DDRAM */
-uint8_t lcd_read_ram();
+uint8_t lcd_read();
 
 /** Send a string to LCD */
 void lcd_puts(char* str_p);
+
+/** Send a string to LCD from program memory */
+void lcd_puts_pgm(const char* str_p);
 
 /** Sedn a char to LCD */
 void lcd_putc(const char c);
 
 /** Show string at X, Y */
-#define lcd_str_xy(x, y, str_p) do { lcd_xy((x), (y)); lcd_puts((str_p)); } while(0)
+#define lcd_puts_xy(x, y, str_p) do { lcd_xy((x), (y)); lcd_puts((str_p)); } while(0)
+
+/** Show string at X, Y */
+#define lcd_puts_xy_pgm(x, y, str_p) do { lcd_xy((x), (y)); lcd_puts_pgm((str_p)); } while(0)
 
 /** Show char at X, Y */
-#define lcd_char_xy(x, y, c) do { lcd_xy((x), (y)); lcd_putc((c)); } while(0)
+#define lcd_putc_xy(x, y, c) do { lcd_xy((x), (y)); lcd_putc((c)); } while(0)
 
 /** Set cursor position */
 void lcd_xy(const uint8_t x, const uint8_t y);
@@ -115,14 +124,14 @@ void lcd_home();
 /** Clear the screen */
 void lcd_clear();
 
-/** Define a glyph */
-void lcd_define_glyph(const uint8_t index, const uint8_t* array);
+/** Define a glyph - 8 bytes, right 5 bits are used */
+void lcd_glyph(const uint8_t index, const uint8_t* array);
 
 /** Define a glyph that's in PROGMEM */
-void lcd_define_glyph_pgm(const uint8_t index, const uint8_t* array);
+void lcd_glyph_pgm(const uint8_t index, const uint8_t* array);
 
 /** Set address in CGRAM */
-void lcd_set_addr_cgram(const uint8_t acg);
+void lcd_addr_cg(const uint8_t acg);
 
 /** Set address in DDRAM */
-void lcd_set_addr(const uint8_t add);
+void lcd_addr(const uint8_t add);

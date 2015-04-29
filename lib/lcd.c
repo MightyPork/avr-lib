@@ -61,10 +61,10 @@ void lcd_init()
 	_delay_us(100);
 
 	// Configure the display
-	lcd_write_command(LCD_IFACE_4BIT_2LINE);
-	lcd_write_command(LCD_DISABLE);
-	lcd_write_command(LCD_CLEAR);
-	lcd_write_command(LCD_MODE_INC);
+	lcd_command(LCD_IFACE_4BIT_2LINE);
+	lcd_command(LCD_DISABLE);
+	lcd_command(LCD_CLEAR);
+	lcd_command(LCD_MODE_INC);
 
 	// mark as enabled
 	lcd_enable();
@@ -130,7 +130,7 @@ uint8_t _lcd_read_byte()
 
 
 /** Write an instruction byte */
-void lcd_write_command(uint8_t bb)
+void lcd_command(uint8_t bb)
 {
 	_lcd_wait_bf();
 	pin_down(LCD_RS);  // select instruction register
@@ -139,7 +139,7 @@ void lcd_write_command(uint8_t bb)
 
 
 /** Write a data byte */
-void lcd_write_data(uint8_t bb)
+void lcd_write(uint8_t bb)
 {
 	_lcd_wait_bf();
 	pin_up(LCD_RS);  // select data register
@@ -156,7 +156,7 @@ uint8_t lcd_read_bf_addr()
 
 
 /** Read CGRAM or DDRAM */
-uint8_t lcd_read_ram()
+uint8_t lcd_read()
 {
 	pin_up(LCD_RS);
 	return _lcd_read_byte();
@@ -194,17 +194,26 @@ void lcd_puts(char* str_p)
 }
 
 
+/** Print from progmem */
+void lcd_puts_pgm(const char* str_p)
+{
+	char c;
+	while ((c = pgm_read_byte(str_p++)))
+		lcd_putc(c);
+}
+
+
 /** Sedn a char to LCD */
 void lcd_putc(const char c)
 {
-	lcd_write_data(c);
+	lcd_write(c);
 }
 
 
 /** Set cursor position */
 void lcd_xy(const uint8_t x, const uint8_t y)
 {
-	lcd_set_addr(LCD_ROW_ADDR[y] + (x));
+	lcd_addr(LCD_ROW_ADDR[y] + (x));
 }
 
 
@@ -216,14 +225,14 @@ void lcd_cursor(uint8_t type)
 {
 	_lcd_old_cursor = (type & CURSOR_BOTH);
 
-	if (_lcd_enabled) lcd_write_command(LCD_CURSOR_NONE | _lcd_old_cursor);
+	if (_lcd_enabled) lcd_command(LCD_CURSOR_NONE | _lcd_old_cursor);
 }
 
 
 /** Display display (preserving cursor) */
 void lcd_disable()
 {
-	lcd_write_command(LCD_DISABLE);
+	lcd_command(LCD_DISABLE);
 	_lcd_enabled = false;
 }
 
@@ -239,46 +248,46 @@ void lcd_enable()
 /** Go home */
 void lcd_home()
 {
-	lcd_write_command(LCD_HOME);
+	lcd_command(LCD_HOME);
 }
 
 
 /** Clear the screen */
 void lcd_clear()
 {
-	lcd_write_command(LCD_CLEAR);
+	lcd_command(LCD_CLEAR);
 }
 
 
 /** Define a glyph */
-void lcd_define_glyph(const uint8_t index, const uint8_t* array)
+void lcd_glyph(const uint8_t index, const uint8_t* array)
 {
-	lcd_set_addr_cgram(index * 8);
+	lcd_addr_cg(index * 8);
 	for (uint8_t i = 0; i < 8; ++i)	{
-		lcd_write_data(array[i]);
+		lcd_write(array[i]);
 	}
 }
 
 
 /** Define a glyph */
-void lcd_define_glyph_pgm(const uint8_t index, const uint8_t* array)
+void lcd_glyph_pgm(const uint8_t index, const uint8_t* array)
 {
-	lcd_set_addr_cgram(index * 8);
+	lcd_addr_cg(index * 8);
 	for (uint8_t i = 0; i < 8; ++i)	{
-		lcd_write_data(pgm_read_byte(&array[i]));
+		lcd_write(pgm_read_byte(&array[i]));
 	}
 }
 
 
 /** Set address in CGRAM */
-void lcd_set_addr_cgram(const uint8_t acg)
+void lcd_addr_cg(const uint8_t acg)
 {
-	lcd_write_command(0b01000000 | ((acg) & 0b00111111));
+	lcd_command(0b01000000 | ((acg) & 0b00111111));
 }
 
 
 /** Set address in DDRAM */
-void lcd_set_addr(const uint8_t add)
+void lcd_addr(const uint8_t add)
 {
-	lcd_write_command(0b10000000 | ((add) & 0b01111111));
+	lcd_command(0b10000000 | ((add) & 0b01111111));
 }

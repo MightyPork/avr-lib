@@ -1,8 +1,11 @@
+//
+// Example of UART with interrupts
+//
+
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/pgmspace.h>
 #include <avr/interrupt.h>
-#include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 
