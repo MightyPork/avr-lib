@@ -27,5 +27,13 @@ void main()
 
 	put_u16f(uart, 31416, 4);
 
+	put_i32(uart, 123456789L);
+
+	put_nl(uart);
+
+	put_x16(uart, 0xAC01);
+	put_nl(uart);
+	put_x64(uart, 0xABAD1DEADEADBEEF);
+
 	while(1);
 }

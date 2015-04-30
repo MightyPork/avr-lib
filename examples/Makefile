@@ -11,7 +11,7 @@ EFUSE = 0x05
 
 ## === Source files ===
 # Main C file
-MAIN = lcd_test.c
+MAIN = uart_stream.c
 # Extra C files in this folder
 LOCAL_SOURCE =
 
