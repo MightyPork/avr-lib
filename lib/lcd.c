@@ -308,6 +308,9 @@ void lcd_home()
 void lcd_clear()
 {
 	lcd_command(LCD_CLEAR);
+	_pos.x = 0;
+	_pos.y = 0;
+	_addrtype = TEXT;
 }
 
 
