@@ -10,6 +10,7 @@
 #include <stdlib.h>
 
 #include "lib/uart.h"
+#include "lib/stream.h"
 
 
 // UART receive interrupt vector
@@ -18,10 +19,10 @@ ISR(USART_RX_vect)
 	uint8_t c = uart_rx();
 
 	// print character and it's code
-	uart_putc(c);
-	uart_putc(' ');
-	uart_putu(c);
-	uart_nl();
+	uart_tx(c);
+	uart_tx(' ');
+	put_u8(uart, c);
+	put_nl(uart);
 }
 
 
@@ -35,7 +36,7 @@ void main()
 	sei();
 
 	// Greeter string
-	uart_puts_pgm(PSTR("UART receiver with ISR\r\n"));
+	put_str_P(uart, PSTR("UART receiver with ISR\r\n"));
 
 	while(1);
 }

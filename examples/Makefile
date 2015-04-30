@@ -11,7 +11,7 @@ EFUSE = 0x05
 
 ## === Source files ===
 # Main C file
-MAIN = sonar_to_lcd.c
+MAIN = uart_isr.c
 # Extra C files in this folder
 LOCAL_SOURCE =
 
