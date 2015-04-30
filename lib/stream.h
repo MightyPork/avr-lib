@@ -1,8 +1,20 @@
 #pragma once
 
 //
-// Stream utilities - printing abstraction
-// Works with eg. UART
+// Streams -- in this library -- are instances of type STREAM.
+//
+// A stream can be used for receiving and sending bytes, generally
+// it's a pipe to a device.
+//
+// They are designed for printing numbers and strings, but can
+// also be used for general data transfer.
+//
+// Examples of streams:
+// "uart.h" -> declares global variable "uart" which is a pointer to the UART stream
+// "lcd.h" -> declares a global variable "lcd" (pointer to LCD scho stream)
+//
+// Streams help avoid code duplication, since the same functions can be used
+// to format and print data to different device types.
 //
 
 #include <stdlib.h>
@@ -47,6 +59,22 @@ void put_u32(const STREAM *p, const uint32_t num);
 
 /** Send signed long */
 void put_i32(const STREAM *p, const int32_t num);
+
+
+/** Send unsigned int8 */
+void put_x8(const STREAM *p, const uint8_t num);
+
+
+/** Send int as hex */
+void put_x16(const STREAM *p, const uint16_t num);
+
+
+/** Send long as hex */
+void put_x32(const STREAM *p, const uint32_t num);
+
+
+/** Send long long as hex */
+void put_x64(const STREAM *p, const uint64_t num);
 
 
 // float variant doesn't make sense for 8-bit int

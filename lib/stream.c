@@ -3,6 +3,7 @@
 #include <stdint.h>
 
 #include "stream.h"
+#include "calc.h"
 
 
 static char tmpstr[20]; // buffer for number rendering
@@ -74,6 +75,54 @@ void put_i32(const STREAM *p, const int32_t num)
 	ltoa(num, tmpstr, 10);
 	put_str(p, tmpstr);
 }
+
+
+/** Print number as hex */
+void _print_hex(const STREAM *p, uint8_t* start, uint8_t bytes)
+{
+	for (; bytes > 0; bytes--) {
+		uint8_t b = *(start + bytes - 1);
+
+		for(uint8_t j = 0; j < 2; j++) {
+			uint8_t x = high_nibble(b);
+			b = b << 4;
+			if (x < 0xA) {
+				p->tx('0' + x);
+			} else {
+				p->tx('A' + (x - 0xA));
+			}
+		}
+	}
+}
+
+
+/** Send unsigned int8 */
+void put_x8(const STREAM *p, const uint8_t num)
+{
+	_print_hex(p, (uint8_t*) &num, 1);
+}
+
+
+/** Send int as hex */
+void put_x16(const STREAM *p, const uint16_t num)
+{
+	_print_hex(p, (uint8_t*) &num, 2);
+}
+
+
+/** Send long as hex */
+void put_x32(const STREAM *p, const uint32_t num)
+{
+	_print_hex(p, (uint8_t*) &num, 4);
+}
+
+
+/** Send long long as hex */
+void put_x64(const STREAM *p, const uint64_t num)
+{
+	_print_hex(p, (uint8_t*) &num, 8);
+}
+
 
 
 // float variant doesn't make sense for 8-bit int
