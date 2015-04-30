@@ -17,9 +17,9 @@ void vt_goto(uint8_t x, uint8_t y)
 {
 	uart_putc(27);
 	uart_putc('[');
-	uart_putu(x);
+	uart_putu(y+1); // one-based !
 	uart_putc(';');
-	uart_putu(y);
+	uart_putu(x+1);
 	uart_putc('H');
 }
 
@@ -28,7 +28,7 @@ void vt_goto_x(uint8_t x)
 {
 	uart_putc(27);
 	uart_putc('[');
-	uart_putu(x);
+	uart_putu(x+1);
 	uart_putc('`');
 }
 
@@ -37,7 +37,7 @@ void vt_goto_y(uint8_t y)
 {
 	uart_putc(27);
 	uart_putc('[');
-	uart_putu(y);
+	uart_putu(y+1);
 	uart_putc('d');
 }
 
