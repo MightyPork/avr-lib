@@ -75,6 +75,8 @@
 #define write_low_nibble_p(reg_p, value)  do { *(reg_p) = (*(reg_p) & 0xF0) | ((uint8_t)(value) & 0xF); } while(0)
 #define write_high_nibble_p(reg_p, value) do { *(reg_p) = (*(reg_p) & 0x0F) | (((uint8_t)(value) & 0xF) << 4); } while(0)
 
+#define low_nibble(x) ((uint8_t)(x) & 0xF)
+#define high_nibble(x) (((uint8_t)(x) & 0xF0) >> 4)
 
 // --- Range tests ---
 
