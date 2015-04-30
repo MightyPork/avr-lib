@@ -34,6 +34,10 @@ typedef struct {
 } sonar_t;
 
 
+extern volatile bool sonar_busy;
+extern volatile int16_t sonar_result;
+
+
 // Create a Sonar port
 // Args: sonar_t* so, Trig pin, Echo pin
 #define sonar_init(so, trig, echo) do { \
@@ -44,14 +48,6 @@ typedef struct {
 
 // private, in header because of the macro.
 void _sonar_init_do(sonar_t* so, PORT_P port, uint8_t ntx, PORT_P pin, uint8_t nrx);
-
-
-/** Check if sonar is busy */
-bool sonar_busy();
-
-
-/** Get result of last measurement, in millimeters. Returns -1 if no obstacle detected */
-int16_t sonar_result();
 
 
 /**

@@ -16,8 +16,6 @@ void main()
 	// Enable UART with baud rate 9600
 	uart_init(9600);
 
-
-
 	// --- some examples of printing functions ---
 
 
@@ -26,22 +24,12 @@ void main()
 
 	// Use _pgm for strings in program memory
 	// (PSTR macro is defined in avr/pgmspace.h)
-	uart_puts_pgm(PSTR("Program memory string example\r\n"));
+	uart_puts_P(PSTR("Program memory string example\r\n"));
 
 	// print a char. This is an alias for uart_tx
 	uart_putc('a');
 
-	// print a newline
-	uart_nl();
-
-	// Printing numbers is also easy
-	// Look in `uart.h` for more info
-	uart_putn(123);
-	uart_nl();
-
-	// Print int as float (adds decimal point at 4th place from the end)
-	uart_puti(31415, 4);
-	uart_nl();
+	// For printing numbers, please check "uart_stream.c" example
 
 
 	// --- receive example ---

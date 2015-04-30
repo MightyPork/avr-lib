@@ -7,13 +7,13 @@
 #include "sonar.h"
 
 // Currently measured sonar
-volatile sonar_t *_sonar_active_so;
+sonar_t* _sonar_active_so;
 
 // Flag that measurement is in progress
-volatile bool _busy;
+volatile bool sonar_busy;
 
 // Result of last measurement, in millimeters
-volatile int16_t _result = 0xFFFF;
+volatile int16_t sonar_result;
 
 
 void _sonar_init_do(sonar_t* so, PORT_P port, uint8_t ntx, PORT_P pin, uint8_t nrx)
@@ -45,11 +45,11 @@ void _sonar_init_do(sonar_t* so, PORT_P port, uint8_t ntx, PORT_P pin, uint8_t n
  */
 bool sonar_start(sonar_t* so)
 {
-	if (_busy) return false;
+	if (sonar_busy) return false;
 
 	_sonar_active_so = so;
 
-	_busy = true;
+	sonar_busy = true;
 
 	// make sure the timer is stopped (set clock to NONE)
 	TCCR1B = 0;
@@ -114,16 +114,16 @@ void _sonar_stop()
 	// Disable timer1 overflow interrupt
 	TIMSK1 &= ~(1 << TOIE1);
 
-	_busy = false;
+	sonar_busy = false;
 }
 
 
 /** Handle TIMER1_OVF (returns true if consumed) */
-bool sonar_handle_t1ovf()
+inline bool sonar_handle_t1ovf()
 {
-	if (!_busy) return false; // nothing
+	if (!sonar_busy) return false; // nothing
 
-	_result = -1;
+	sonar_result = -1;
 	_sonar_stop();
 
 	return true;
@@ -131,9 +131,9 @@ bool sonar_handle_t1ovf()
 
 
 /** Handle pin change interrupt (returns true if consumed) */
-bool sonar_handle_pci()
+inline bool sonar_handle_pci()
 {
-	if (!_busy) {
+	if (!sonar_busy) {
 		return false; // nothing
 	}
 
@@ -146,24 +146,12 @@ bool sonar_handle_pci()
 	x /= _SNR_DIV_CONST;
 	x *= 100000000L;
 	x /= F_CPU;
-	_result = (int16_t) x;
+	sonar_result = (int16_t) x;
 
 	// no obstacle
-	if (_result > _SNR_MAX_DIST) _result = -1;
+	if (sonar_result > _SNR_MAX_DIST) sonar_result = -1;
 
 	_sonar_stop();
 
 	return true;
-}
-
-
-bool sonar_busy()
-{
-	return _busy;
-}
-
-
-int16_t sonar_result()
-{
-	return _result;
 }

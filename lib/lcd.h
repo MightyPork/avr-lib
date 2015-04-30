@@ -21,8 +21,17 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "stream.h"
+
 // File with configs
 #include "lcd_config.h"
+
+
+
+// Shared LCD stream object
+// Can be used with functions from stream.h once LCD is initialized
+extern STREAM* lcd;
+
 
 // --- Commands ---
 
@@ -88,7 +97,7 @@ uint8_t lcd_read();
 void lcd_puts(char* str_p);
 
 /** Send a string to LCD from program memory */
-void lcd_puts_pgm(const char* str_p);
+void lcd_puts_P(const char* str_p);
 
 /** Sedn a char to LCD */
 void lcd_putc(const char c);
@@ -97,7 +106,7 @@ void lcd_putc(const char c);
 #define lcd_puts_xy(x, y, str_p) do { lcd_xy((x), (y)); lcd_puts((str_p)); } while(0)
 
 /** Show string at X, Y */
-#define lcd_puts_xy_pgm(x, y, str_p) do { lcd_xy((x), (y)); lcd_puts_pgm((str_p)); } while(0)
+#define lcd_puts_xy_P(x, y, str_p) do { lcd_xy((x), (y)); lcd_puts_P((str_p)); } while(0)
 
 /** Show char at X, Y */
 #define lcd_putc_xy(x, y, c) do { lcd_xy((x), (y)); lcd_putc((c)); } while(0)
@@ -128,7 +137,7 @@ void lcd_clear();
 void lcd_glyph(const uint8_t index, const uint8_t* array);
 
 /** Define a glyph that's in PROGMEM */
-void lcd_glyph_pgm(const uint8_t index, const uint8_t* array);
+void lcd_glyph_P(const uint8_t index, const uint8_t* array);
 
 /** Set address in CGRAM */
 void lcd_addr_cg(const uint8_t acg);

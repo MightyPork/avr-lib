@@ -13,6 +13,11 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "stream.h"
+
+// Shared UART stream object
+// Can be used with functions from stream.h once UART is initialized
+extern STREAM* uart;
 
 /** Init UART for given baudrate */
 void _uart_init_do(uint16_t ubrr); // internal, needed for the macro.
@@ -59,30 +64,5 @@ void uart_flush();
 void uart_puts(const char* str);
 
 /** Send progmem string over UART */
-void uart_puts_pgm(const char* str);
+void uart_puts_P(const char* str);
 
-
-// Numbers
-
-/** Send unsigned int */
-void uart_putu(const uint8_t num);
-
-/** Send signed int */
-void uart_putn(const int8_t num);
-
-/** Send unsigned int */
-void uart_puti(const int16_t num, const uint8_t places);
-
-/** Send signed int */
-void uart_putiu(const uint16_t num, const uint8_t places);
-
-/** Send signed long */
-void uart_putl(const int32_t num, const uint8_t places);
-
-/** Send unsigned long */
-void uart_putlu(const uint32_t num, const uint8_t places);
-
-// Extras
-
-/** Send CRLF */
-void uart_nl();

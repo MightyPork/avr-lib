@@ -11,6 +11,7 @@
 #include "lib/uart.h"
 #include "lib/arduino_pins.h"
 #include "lib/sonar.h"
+#include "lib/stream.h"
 
 
 
@@ -64,21 +65,21 @@ void main()
 		// Measure
 		sonar_start(&so);
 
-		while(sonar_busy()) {
+		while(sonar_busy) {
 			// Sonar is asynchronous
 			// Here we just wait for it to complete
 		}
 
-		int16_t res = sonar_result();
+		int16_t res = sonar_result;
 
 
 
 		// Print
 		if (res < 0) {
-			uart_puts("NO OBSTACLES\r\n");
+			put_str(uart, "NO OBSTACLES\r\n");
 		} else {
-			uart_puti(res, 1); // one decimal place
-			uart_puts(" cm\r\n");
+			put_i16f(uart, res, 1); // one decimal place
+			put_str(uart, " cm\r\n");
 		}
 
 

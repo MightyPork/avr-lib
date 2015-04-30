@@ -13,6 +13,12 @@
 // Start address of rows
 const uint8_t LCD_ROW_ADDR[] = {0x00, 0x40, 0x14, 0x54};
 
+
+// Shared stream instance
+static STREAM _lcd_singleton;
+STREAM* lcd;
+
+
 // Internal prototypes
 void _lcd_mode_r();
 void _lcd_mode_w();
@@ -35,6 +41,16 @@ uint8_t _lcd_read_byte();
 
 // 0 W, 1 R
 bool _lcd_mode;
+
+struct {
+	uint8_t x;
+	uint8_t y;
+} _pos;
+
+enum {
+	TEXT = 0,
+	CG = 1
+} _addrtype;
 
 
 /** Initialize the display */
@@ -68,6 +84,16 @@ void lcd_init()
 
 	// mark as enabled
 	lcd_enable();
+
+	_lcd_singleton.tx = &lcd_write;
+	_lcd_singleton.rx = &lcd_read;
+
+	// Stream
+	lcd = &_lcd_singleton;
+
+	_pos.x = 0;
+	_pos.y = 0;
+	_addrtype = TEXT;
 }
 
 
@@ -75,7 +101,7 @@ void lcd_init()
 void _lcd_clk()
 {
 	pin_up(LCD_E);
-	delay_ns(420);
+	delay_ns(450);
 	pin_down(LCD_E);
 }
 
@@ -141,6 +167,24 @@ void lcd_command(uint8_t bb)
 /** Write a data byte */
 void lcd_write(uint8_t bb)
 {
+	if (_addrtype == TEXT) {
+		if (bb == '\r') {
+			// CR
+			_pos.x = 0;
+			lcd_xy(_pos.x, _pos.y);
+			return;
+		}
+
+		if (bb == '\n') {
+			// LF
+			_pos.y++;
+			lcd_xy(_pos.x, _pos.y);
+			return;
+		}
+
+		_pos.x++;
+	}
+
 	_lcd_wait_bf();
 	pin_up(LCD_RS);  // select data register
 	_lcd_write_byte(bb);  // send data byte
@@ -158,12 +202,14 @@ uint8_t lcd_read_bf_addr()
 /** Read CGRAM or DDRAM */
 uint8_t lcd_read()
 {
+	if (_addrtype == TEXT) _pos.x++;
+
 	pin_up(LCD_RS);
 	return _lcd_read_byte();
 }
 
 
-/** Write a byte using the 8-bit interface */
+/** Write a byte using the 4-bit interface */
 void _lcd_write_byte(uint8_t bb)
 {
 	_lcd_mode_w();  // enter W mode
@@ -189,13 +235,14 @@ void _lcd_wait_bf()
 /** Send a string to LCD */
 void lcd_puts(char* str_p)
 {
-	while (*str_p)
-		lcd_putc(*str_p++);
+	char c;
+	while ((c = *str_p++))
+		lcd_putc(c);
 }
 
 
 /** Print from progmem */
-void lcd_puts_pgm(const char* str_p)
+void lcd_puts_P(const char* str_p)
 {
 	char c;
 	while ((c = pgm_read_byte(str_p++)))
@@ -213,6 +260,8 @@ void lcd_putc(const char c)
 /** Set cursor position */
 void lcd_xy(const uint8_t x, const uint8_t y)
 {
+	_pos.x = x;
+	_pos.y = y;
 	lcd_addr(LCD_ROW_ADDR[y] + (x));
 }
 
@@ -249,6 +298,9 @@ void lcd_enable()
 void lcd_home()
 {
 	lcd_command(LCD_HOME);
+	_pos.x = 0;
+	_pos.y = 0;
+	_addrtype = TEXT;
 }
 
 
@@ -266,22 +318,31 @@ void lcd_glyph(const uint8_t index, const uint8_t* array)
 	for (uint8_t i = 0; i < 8; ++i)	{
 		lcd_write(array[i]);
 	}
+
+	// restore previous position
+	lcd_xy(_pos.x, _pos.y);
+	_addrtype = TEXT;
 }
 
 
 /** Define a glyph */
-void lcd_glyph_pgm(const uint8_t index, const uint8_t* array)
+void lcd_glyph_P(const uint8_t index, const uint8_t* array)
 {
 	lcd_addr_cg(index * 8);
 	for (uint8_t i = 0; i < 8; ++i)	{
 		lcd_write(pgm_read_byte(&array[i]));
 	}
+
+	// restore previous position
+	lcd_xy(_pos.x, _pos.y);
+	_addrtype = TEXT;
 }
 
 
 /** Set address in CGRAM */
 void lcd_addr_cg(const uint8_t acg)
 {
+	_addrtype = CG;
 	lcd_command(0b01000000 | ((acg) & 0b00111111));
 }
 
@@ -289,5 +350,6 @@ void lcd_addr_cg(const uint8_t acg)
 /** Set address in DDRAM */
 void lcd_addr(const uint8_t add)
 {
+	_addrtype = TEXT;
 	lcd_command(0b10000000 | ((add) & 0b01111111));
 }

@@ -30,26 +30,28 @@ void main()
 {
 	lcd_init();
 
-	// Define custom glyph at character 0
-	lcd_glyph_pgm(0, glyph);
-
-	// After writing a glyph, the address is changed
-	// So we need to fix that:
-	lcd_xy(0, 0);
+	// Example of using the LCD stream
+	put_u32f(lcd, 271828, 5);
 
 	// Print a string
-	lcd_puts("Hello");
+	lcd_puts(" Hello\r\n");
 
 	// Use _pgm for strings in program memory
 	// Here we print string at position xy
-	lcd_puts_xy_pgm(0, 1, PSTR("String from PGM "));
+	lcd_puts_P(PSTR("String from PGM "));
 
-	// print the custom glyph
+	// declare custom glyph
+	lcd_glyph_P(0, glyph);
+
+	// and show it
 	lcd_putc(0);
+
+	lcd_puts(" !");
 
 	// enable blink/bar cursor type
 	lcd_cursor(CURSOR_BOTH);
 
+	// print at given position
 	lcd_puts_xy(5, 2, "Third line?");
 	lcd_puts_xy(3, 3, "Fourth line!");
 

@@ -1,0 +1,225 @@
+
+uart_stream.elf:     file format elf32-avr
+
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	33 c0       	rjmp	.+102    	; 0x68 <__ctors_end>
+   2:	00 00       	nop
+   4:	4c c0       	rjmp	.+152    	; 0x9e <__bad_interrupt>
+   6:	00 00       	nop
+   8:	4a c0       	rjmp	.+148    	; 0x9e <__bad_interrupt>
+   a:	00 00       	nop
+   c:	48 c0       	rjmp	.+144    	; 0x9e <__bad_interrupt>
+   e:	00 00       	nop
+  10:	46 c0       	rjmp	.+140    	; 0x9e <__bad_interrupt>
+  12:	00 00       	nop
+  14:	44 c0       	rjmp	.+136    	; 0x9e <__bad_interrupt>
+  16:	00 00       	nop
+  18:	42 c0       	rjmp	.+132    	; 0x9e <__bad_interrupt>
+  1a:	00 00       	nop
+  1c:	40 c0       	rjmp	.+128    	; 0x9e <__bad_interrupt>
+  1e:	00 00       	nop
+  20:	3e c0       	rjmp	.+124    	; 0x9e <__bad_interrupt>
+  22:	00 00       	nop
+  24:	3c c0       	rjmp	.+120    	; 0x9e <__bad_interrupt>
+  26:	00 00       	nop
+  28:	3a c0       	rjmp	.+116    	; 0x9e <__bad_interrupt>
+  2a:	00 00       	nop
+  2c:	38 c0       	rjmp	.+112    	; 0x9e <__bad_interrupt>
+  2e:	00 00       	nop
+  30:	36 c0       	rjmp	.+108    	; 0x9e <__bad_interrupt>
+  32:	00 00       	nop
+  34:	34 c0       	rjmp	.+104    	; 0x9e <__bad_interrupt>
+  36:	00 00       	nop
+  38:	32 c0       	rjmp	.+100    	; 0x9e <__bad_interrupt>
+  3a:	00 00       	nop
+  3c:	30 c0       	rjmp	.+96     	; 0x9e <__bad_interrupt>
+  3e:	00 00       	nop
+  40:	2e c0       	rjmp	.+92     	; 0x9e <__bad_interrupt>
+  42:	00 00       	nop
+  44:	2c c0       	rjmp	.+88     	; 0x9e <__bad_interrupt>
+  46:	00 00       	nop
+  48:	2a c0       	rjmp	.+84     	; 0x9e <__bad_interrupt>
+  4a:	00 00       	nop
+  4c:	28 c0       	rjmp	.+80     	; 0x9e <__bad_interrupt>
+  4e:	00 00       	nop
+  50:	26 c0       	rjmp	.+76     	; 0x9e <__bad_interrupt>
+  52:	00 00       	nop
+  54:	24 c0       	rjmp	.+72     	; 0x9e <__bad_interrupt>
+  56:	00 00       	nop
+  58:	22 c0       	rjmp	.+68     	; 0x9e <__bad_interrupt>
+  5a:	00 00       	nop
+  5c:	20 c0       	rjmp	.+64     	; 0x9e <__bad_interrupt>
+  5e:	00 00       	nop
+  60:	1e c0       	rjmp	.+60     	; 0x9e <__bad_interrupt>
+  62:	00 00       	nop
+  64:	1c c0       	rjmp	.+56     	; 0x9e <__bad_interrupt>
+	...
+
+00000068 <__ctors_end>:
+  68:	11 24       	eor	r1, r1
+  6a:	1f be       	out	0x3f, r1	; 63
+  6c:	cf ef       	ldi	r28, 0xFF	; 255
+  6e:	d8 e0       	ldi	r29, 0x08	; 8
+  70:	de bf       	out	0x3e, r29	; 62
+  72:	cd bf       	out	0x3d, r28	; 61
+
+00000074 <__do_copy_data>:
+  74:	11 e0       	ldi	r17, 0x01	; 1
+  76:	a0 e0       	ldi	r26, 0x00	; 0
+  78:	b1 e0       	ldi	r27, 0x01	; 1
+  7a:	ee e2       	ldi	r30, 0x2E	; 46
+  7c:	f1 e0       	ldi	r31, 0x01	; 1
+  7e:	02 c0       	rjmp	.+4      	; 0x84 <__do_copy_data+0x10>
+  80:	05 90       	lpm	r0, Z+
+  82:	0d 92       	st	X+, r0
+  84:	a6 30       	cpi	r26, 0x06	; 6
+  86:	b1 07       	cpc	r27, r17
+  88:	d9 f7       	brne	.-10     	; 0x80 <__do_copy_data+0xc>
+
+0000008a <__do_clear_bss>:
+  8a:	11 e0       	ldi	r17, 0x01	; 1
+  8c:	a6 e0       	ldi	r26, 0x06	; 6
+  8e:	b1 e0       	ldi	r27, 0x01	; 1
+  90:	01 c0       	rjmp	.+2      	; 0x94 <.do_clear_bss_start>
+
+00000092 <.do_clear_bss_loop>:
+  92:	1d 92       	st	X+, r1
+
+00000094 <.do_clear_bss_start>:
+  94:	ac 30       	cpi	r26, 0x0C	; 12
+  96:	b1 07       	cpc	r27, r17
+  98:	e1 f7       	brne	.-8      	; 0x92 <.do_clear_bss_loop>
+  9a:	02 d0       	rcall	.+4      	; 0xa0 <main>
+  9c:	46 c0       	rjmp	.+140    	; 0x12a <_exit>
+
+0000009e <__bad_interrupt>:
+  9e:	b0 cf       	rjmp	.-160    	; 0x0 <__vectors>
+
+000000a0 <main>:
+#include "lib/stream.h"
+
+void main()
+{
+	// Enable UART with baud rate 9600
+	uart_init(9600);
+  a0:	87 e6       	ldi	r24, 0x67	; 103
+  a2:	90 e0       	ldi	r25, 0x00	; 0
+  a4:	16 d0       	rcall	.+44     	; 0xd2 <_uart_init_do>
+  a6:	60 e0       	ldi	r22, 0x00	; 0
+
+	put_str(uart, "hello");
+  a8:	71 e0       	ldi	r23, 0x01	; 1
+  aa:	80 91 0a 01 	lds	r24, 0x010A
+  ae:	90 91 0b 01 	lds	r25, 0x010B
+  b2:	28 d0       	rcall	.+80     	; 0x104 <put_str>
+  b4:	ff cf       	rjmp	.-2      	; 0xb4 <main+0x14>
+
+000000b6 <uart_tx>:
+
+/** Send byte over UART */
+void uart_tx(uint8_t data)
+{
+	// Wait for transmit buffer
+	while (!uart_tx_ready());
+  b6:	90 91 c0 00 	lds	r25, 0x00C0
+  ba:	95 ff       	sbrs	r25, 5
+  bc:	fc cf       	rjmp	.-8      	; 0xb6 <uart_tx>
+	// send it
+	UDR0 = data;
+  be:	80 93 c6 00 	sts	0x00C6, r24
+  c2:	08 95       	ret
+
+000000c4 <uart_rx>:
+
+/** Receive one byte over UART */
+uint8_t uart_rx()
+{
+	// Wait for data to be received
+	while (!uart_rx_ready());
+  c4:	80 91 c0 00 	lds	r24, 0x00C0
+  c8:	87 ff       	sbrs	r24, 7
+  ca:	fc cf       	rjmp	.-8      	; 0xc4 <uart_rx>
+	// Get and return received data from buffer
+	return UDR0;
+  cc:	80 91 c6 00 	lds	r24, 0x00C6
+}
+  d0:	08 95       	ret
+
+000000d2 <_uart_init_do>:
+STREAM* uart;
+
+
+inline void _uart_init_do(uint16_t ubrr) {
+	/*Set baud rate */
+	UBRR0H = (uint8_t) (ubrr >> 8);
+  d2:	90 93 c5 00 	sts	0x00C5, r25
+	UBRR0L = (uint8_t) ubrr;
+  d6:	80 93 c4 00 	sts	0x00C4, r24
+
+	// Enable Rx and Tx
+	UCSR0B = (1 << RXEN0) | (1 << TXEN0);
+  da:	88 e1       	ldi	r24, 0x18	; 24
+  dc:	80 93 c1 00 	sts	0x00C1, r24
+
+	// 8-bit data, 1 stop bit
+	UCSR0C = (0b11 << UCSZ00);
+  e0:	86 e0       	ldi	r24, 0x06	; 6
+  e2:	80 93 c2 00 	sts	0x00C2, r24
+
+	uart_singleton.tx = &uart_tx;
+  e6:	e6 e0       	ldi	r30, 0x06	; 6
+  e8:	f1 e0       	ldi	r31, 0x01	; 1
+  ea:	8b e5       	ldi	r24, 0x5B	; 91
+  ec:	90 e0       	ldi	r25, 0x00	; 0
+  ee:	91 83       	std	Z+1, r25	; 0x01
+  f0:	80 83       	st	Z, r24
+	uart_singleton.rx = &uart_rx;
+  f2:	82 e6       	ldi	r24, 0x62	; 98
+  f4:	90 e0       	ldi	r25, 0x00	; 0
+  f6:	93 83       	std	Z+3, r25	; 0x03
+  f8:	82 83       	std	Z+2, r24	; 0x02
+
+	uart = &uart_singleton;
+  fa:	f0 93 0b 01 	sts	0x010B, r31
+  fe:	e0 93 0a 01 	sts	0x010A, r30
+ 102:	08 95       	ret
+
+00000104 <put_str>:
+
+char tmpstr[20]; // buffer for number rendering
+
+
+void put_str(const STREAM *p, char* str)
+{
+ 104:	0f 93       	push	r16
+ 106:	1f 93       	push	r17
+ 108:	cf 93       	push	r28
+ 10a:	df 93       	push	r29
+ 10c:	8c 01       	movw	r16, r24
+ 10e:	eb 01       	movw	r28, r22
+	char c;
+	while ((c = *str++))
+ 110:	89 91       	ld	r24, Y+
+ 112:	88 23       	and	r24, r24
+ 114:	29 f0       	breq	.+10     	; 0x120 <put_str+0x1c>
+		p->tx(c);
+ 116:	d8 01       	movw	r26, r16
+ 118:	ed 91       	ld	r30, X+
+ 11a:	fc 91       	ld	r31, X
+ 11c:	09 95       	icall
+ 11e:	f8 cf       	rjmp	.-16     	; 0x110 <put_str+0xc>
+}
+ 120:	df 91       	pop	r29
+ 122:	cf 91       	pop	r28
+ 124:	1f 91       	pop	r17
+ 126:	0f 91       	pop	r16
+ 128:	08 95       	ret
+
+0000012a <_exit>:
+ 12a:	f8 94       	cli
+
+0000012c <__stop_program>:
+ 12c:	ff cf       	rjmp	.-2      	; 0x12c <__stop_program>
