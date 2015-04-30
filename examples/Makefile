@@ -114,7 +114,7 @@ clean:
 
 # Clean all trash
 purge:
-	rm -f *.elf *.hex *.obj *.o *.d *.eep *.lst *.lss *.sym *.map *~
+	rm -f *.elf *.hex *.obj *.o *.d *.eep *.lst *.lss *.sym *.map *~ *.pre
 
 
 ## === avrdude ===
