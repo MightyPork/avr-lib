@@ -38,6 +38,7 @@ void put_str_P(const STREAM *p, const char* str);
 
 
 /** Send signed int8 */
+#define put_char(p, c) (p)->tx((c))
 void put_u8(const STREAM *p, const uint8_t num);
 
 
