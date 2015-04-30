@@ -11,7 +11,7 @@ EFUSE = 0x05
 
 ## === Source files ===
 # Main C file
-MAIN = uart_keyhandler.c
+MAIN = uart_echo_rot13.c
 # Extra C files in this folder
 LOCAL_SOURCE =
 
