@@ -3,11 +3,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "pins.h"
+#include "iopins.h"
 #include "sonar.h"
 
 // Currently measured sonar
-sonar_t* _sonar_active_so;
+static sonar_t* _so;
 
 // Flag that measurement is in progress
 volatile bool sonar_busy;
@@ -24,15 +24,9 @@ void _sonar_init_do(sonar_t* so, PORT_P port, uint8_t ntx, PORT_P pin, uint8_t n
 	so->nrx = nrx;
 
 	switch((const uint16_t) pin) {
-		case (const uint16_t)&PINB:
-			so->bank = 0;
-			break;
-		case (const uint16_t)&PINC:
-			so->bank = 1;
-			break;
-		case (const uint16_t)&PIND:
-			so->bank = 2;
-			break;
+		case ((const uint16_t) &PINB): so->bank = 0; break;
+		case ((const uint16_t) &PINC): so->bank = 1; break;
+		case ((const uint16_t) &PIND): so->bank = 2; break;
 	}
 }
 
@@ -47,7 +41,7 @@ bool sonar_start(sonar_t* so)
 {
 	if (sonar_busy) return false;
 
-	_sonar_active_so = so;
+	_so = so;
 
 	sonar_busy = true;
 
@@ -56,37 +50,31 @@ bool sonar_start(sonar_t* so)
 
 	// Timer overflow interrupt enable
 	// We'll stop measuring on overflow
-	TIMSK1 |= (1 << TOIE1);
+	sbi(TIMSK1, TOIE1);
 
 	// Clear the timer value
 	TCNT1 = 0;
 
 	// Set up pin change interrupt mask for the RX pin
 	switch(so->bank) {
-		case 0:
-			PCMSK0 |= (1 << (so->nrx));
-			break;
-		case 1:
-			PCMSK1 |= (1 << (so->nrx));
-			break;
-		case 2:
-			PCMSK2 |= (1 << (so->nrx));
-			break;
+		case 0: sbi(PCMSK0, so->nrx); break;
+		case 1: sbi(PCMSK1, so->nrx); break;
+		case 2: sbi(PCMSK2, so->nrx); break;
 	}
 
 	// send positive pulse
-	*(so->port) |= (1 << so->ntx);
+	sbi_p(so->port, so->ntx);
 	_delay_us(_SNR_TRIG_TIME);
-	*(so->port) &= ~(1 << so->ntx);
+	cbi_p(so->port, so->ntx);
 
 	// Wait for start of response
-	while ( (*(so->pin) & (1 << so->nrx)) == 0 );
+	while (bit_is_low_p(so->pin, so->nrx));
 
 	// Set timer clock source: F_CPU / 8 (0.5 us resolution)
 	TCCR1B = (0b010 << CS10);
 
 	// Enable pin change interrupt
-	PCICR |= (1 << (so->bank));
+	sbi(PCICR, so->bank);
 
 	return true;
 }
@@ -99,20 +87,14 @@ void _sonar_stop()
 	TCCR1B = 0;
 
 	// Disable RX pin interrupt mask
-	switch(_sonar_active_so->bank) {
-		case 0:
-			PCMSK0 &= ~(1 << (_sonar_active_so->nrx));
-			break;
-		case 1:
-			PCMSK1 &= ~(1 << (_sonar_active_so->nrx));
-			break;
-		case 2:
-			PCMSK2 &= ~(1 << (_sonar_active_so->nrx));
-			break;
+	switch(_so->bank) {
+		case 0: PCMSK0 &= ~(1 << (_so->nrx)); break;
+		case 1: PCMSK1 &= ~(1 << (_so->nrx)); break;
+		case 2: PCMSK2 &= ~(1 << (_so->nrx)); break;
 	}
 
 	// Disable timer1 overflow interrupt
-	TIMSK1 &= ~(1 << TOIE1);
+	cbi(TIMSK1, TOIE1);
 
 	sonar_busy = false;
 }
@@ -137,7 +119,7 @@ inline bool sonar_handle_pci()
 		return false; // nothing
 	}
 
-	if (*(_sonar_active_so->pin) & (1 << _sonar_active_so->nrx)) {
+	if (bit_is_high_p(_so->pin, _so->nrx)) {
 		// rx is high, not our pin change event
 		return false;
 	}

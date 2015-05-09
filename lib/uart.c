@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "calc.h"
 #include "uart.h"
 #include "stream.h"
 
@@ -34,33 +35,21 @@ void _uart_init_do(uint16_t ubrr) {
 /** Enable or disable RX ISR */
 void uart_isr_rx(bool yes)
 {
-	if(yes) {
-		UCSR0B |= (1 << RXCIE0);
-	} else {
-		UCSR0B &= ~(1 << RXCIE0);
-	}
+	set_bit(UCSR0B, RXCIE0, yes);
 }
 
 
 /** Enable or disable TX ISR (1 byte is sent) */
 void uart_isr_tx(bool yes)
 {
-	if(yes) {
-		UCSR0B |= (1 << TXCIE0);
-	} else {
-		UCSR0B &= ~(1 << TXCIE0);
-	}
+	set_bit(UCSR0B, TXCIE0, yes);
 }
 
 
 /** Enable or disable DRE ISR (all is sent) */
 void uart_isr_dre(bool yes)
 {
-	if(yes) {
-		UCSR0B |= (1 << UDRIE0);
-	} else {
-		UCSR0B &= ~(1 << UDRIE0);
-	}
+	set_bit(UCSR0B, UDRIE0, yes);
 }
 
 
@@ -107,6 +96,7 @@ void uart_puts_P(const char* str)
 void uart_flush()
 {
 	uint8_t dummy;
-	while (UCSR0A & (1 << RXC0))
+	while (bit_is_high(UCSR0A, RXC0)) {
 		dummy = UDR0;
+	}
 }

@@ -32,10 +32,10 @@ uint8_t _lcd_read_byte();
 #define _lcd_write_low(bb)  _lcd_write_nibble((bb) & 0x0F)
 #define _lcd_write_high(bb) _lcd_write_nibble(((bb) & 0xF0) >> 4)
 #define _lcd_write_nibble(nib) do {                \
-	write_pin(LCD_D7, get_bit((nib), 3));     \
-	write_pin(LCD_D6, get_bit((nib), 2));     \
-	write_pin(LCD_D5, get_bit((nib), 1));     \
-	write_pin(LCD_D4, get_bit((nib), 0));     \
+	set_pin(LCD_D7, get_bit((nib), 3));     \
+	set_pin(LCD_D6, get_bit((nib), 2));     \
+	set_pin(LCD_D5, get_bit((nib), 1));     \
+	set_pin(LCD_D4, get_bit((nib), 0));     \
 } while(0)
 
 
@@ -100,9 +100,9 @@ void lcd_init()
 /** Send a pulse on the ENABLE line */
 void _lcd_clk()
 {
-	pin_up(LCD_E);
+	set_high(LCD_E);
 	delay_ns(450);
-	pin_down(LCD_E);
+	set_low(LCD_E);
 }
 
 
@@ -111,7 +111,7 @@ void _lcd_mode_r()
 {
 	if (_lcd_mode == 1) return;  // already in R mode
 
-	pin_up(LCD_RW);
+	set_high(LCD_RW);
 
 	as_input_pu(LCD_D7);
 	as_input_pu(LCD_D6);
@@ -127,7 +127,7 @@ void _lcd_mode_w()
 {
 	if (_lcd_mode == 0) return;  // already in W mode
 
-	pin_down(LCD_RW);
+	set_low(LCD_RW);
 
 	as_output(LCD_D7);
 	as_output(LCD_D6);
@@ -146,10 +146,10 @@ uint8_t _lcd_read_byte()
 	uint8_t res = 0;
 
 	_lcd_clk();
-	res = (read_pin(LCD_D7) << 7) | (read_pin(LCD_D6) << 6) | (read_pin(LCD_D5) << 5) | (read_pin(LCD_D4) << 4);
+	res = (get_pin(LCD_D7) << 7) | (get_pin(LCD_D6) << 6) | (get_pin(LCD_D5) << 5) | (get_pin(LCD_D4) << 4);
 
 	_lcd_clk();
-	res |= (read_pin(LCD_D7) << 3) | (read_pin(LCD_D6) << 2) | (read_pin(LCD_D5) << 1) | (read_pin(LCD_D4) << 0);
+	res |= (get_pin(LCD_D7) << 3) | (get_pin(LCD_D6) << 2) | (get_pin(LCD_D5) << 1) | (get_pin(LCD_D4) << 0);
 
 	return res;
 }
@@ -159,7 +159,7 @@ uint8_t _lcd_read_byte()
 void lcd_command(uint8_t bb)
 {
 	_lcd_wait_bf();
-	pin_down(LCD_RS);  // select instruction register
+	set_low(LCD_RS);  // select instruction register
 	_lcd_write_byte(bb);    // send instruction byte
 }
 
@@ -186,7 +186,7 @@ void lcd_write(uint8_t bb)
 	}
 
 	_lcd_wait_bf();
-	pin_up(LCD_RS);  // select data register
+	set_high(LCD_RS);  // select data register
 	_lcd_write_byte(bb);  // send data byte
 }
 
@@ -194,7 +194,7 @@ void lcd_write(uint8_t bb)
 /** Read BF & Address */
 uint8_t lcd_read_bf_addr()
 {
-	pin_down(LCD_RS);
+	set_low(LCD_RS);
 	return _lcd_read_byte();
 }
 
@@ -204,7 +204,7 @@ uint8_t lcd_read()
 {
 	if (_addrtype == TEXT) _pos.x++;
 
-	pin_up(LCD_RS);
+	set_high(LCD_RS);
 	return _lcd_read_byte();
 }
 

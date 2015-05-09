@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "lib/pins.h"
+#include "iopins.h"
 
 // Calib constant for the module
 // CM = uS / _DIV_CONST
@@ -41,9 +41,9 @@ extern volatile int16_t sonar_result;
 // Create a Sonar port
 // Args: sonar_t* so, Trig pin, Echo pin
 #define sonar_init(so, trig, echo) do { \
-	as_output(io_pack(trig)); \
-	as_input_pu(io_pack(echo)); \
-	_sonar_init_do(so, &io2port(io_pack(trig)), io2n(io_pack(trig)), &io2pin(io_pack(echo)), io2n(io_pack(echo))); \
+	as_output(trig); \
+	as_input_pu(echo); \
+	_sonar_init_do(so, &_port(trig), _pn(trig), &_pin(echo), _pn(echo)); \
 } while(0)
 
 // private, in header because of the macro.

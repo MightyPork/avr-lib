@@ -12,16 +12,18 @@ static char tmpstr[20]; // buffer for number rendering
 void put_str(const STREAM *p, char* str)
 {
 	char c;
-	while ((c = *str++))
+	while ((c = *str++)) {
 		p->tx(c);
+	}
 }
 
 
 void put_str_P(const STREAM *p, const char* str)
 {
 	char c;
-	while ((c = pgm_read_byte(str++)))
+	while ((c = pgm_read_byte(str++))) {
 		p->tx(c);
+	}
 }
 
 

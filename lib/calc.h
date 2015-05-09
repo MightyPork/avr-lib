@@ -30,16 +30,14 @@
 #define cbi(reg, bit) do { (reg) &= ~(1 << (uint8_t)(bit)); } while(0)
 
 // Get n-th bit
-#define read_bit(reg, bit) (((reg) >> (uint8_t)(bit)) & 0x1)
-#define get_bit(reg, bit)  read_bit(reg, bit)
+#define get_bit(reg, bit) (((reg) >> (uint8_t)(bit)) & 0x1)
 
 // Test n-th bit (Can't use bit_is_set, as it's redefined in sfr_def.h)
-#define bit_is_high(reg, bit) read_bit(reg, bit)
-#define bit_is_low(reg, bit)  (!read_bit(reg, bit))
+#define bit_is_high(reg, bit) get_bit(reg, bit)
+#define bit_is_low(reg, bit)  (!get_bit(reg, bit))
 
 // Write value to n-th bit
-#define write_bit(reg, bit, value) do { (reg) = ((reg) & ~(1 << (uint8_t)(bit))) | (((uint8_t)(value) & 0x1) << (uint8_t)(bit)); } while(0)
-#define set_bit(reg, bit, value)   write_bit(reg, bit, value)
+#define set_bit(reg, bit, value) do { (reg) = ((reg) & ~(1 << (uint8_t)(bit))) | (((uint8_t)(value) & 0x1) << (uint8_t)(bit)); } while(0)
 
 // Invert n-th bit
 #define toggle_bit(reg, bit)       do { (reg) ^= (1 << (uint8_t)(bit)); } while(0)
@@ -53,27 +51,25 @@
 #define cbi_p(reg_p, bit) do { (*(reg_p)) &= ~(1 << (uint8_t)(bit)); } while(0)
 
 // Get n-th bit in pointee
-#define read_bit_p(reg_p, bit) ((*(reg_p) >> (uint8_t)(bit)) & 0x1)
-#define get_bit_p(reg_p, bit)  read_bit_p(reg_p, bit)
+#define get_bit_p(reg_p, bit) ((*(reg_p) >> (uint8_t)(bit)) & 0x1)
 
 // Test n-th bit in pointee (Can't use bit_is_set, as it's redefined in sfr_def.h)
-#define bit_is_high_p(reg_p, bit) read_bit_p(reg_p, bit)
-#define bit_is_low_p(reg_p, bit)  (!read_bit_p(reg_p, bit))
+#define bit_is_high_p(reg_p, bit) get_bit_p(reg_p, bit)
+#define bit_is_low_p(reg_p, bit)  (!get_bit_p(reg_p, bit))
 
 // Write value to a bit in pointee
-#define write_bit_p(reg_p, bit, value) do { *(reg_p) = (*(reg_p) & ~(1 << ((uint8_t)(bit) & 0x1))) | (((uint8_t)(value) & 0x1) << (uint8_t)(bit)); } while(0)
-#define set_bit_p(reg_p, bit, value)     write_bit_p(reg_p, bit, value)
+#define set_bit_p(reg_p, bit, value) do { *(reg_p) = (*(reg_p) & ~(1 << ((uint8_t)(bit) & 0x1))) | (((uint8_t)(value) & 0x1) << (uint8_t)(bit)); } while(0)
 #define toggle_bit_p(reg_p, bit)       do { *(reg_p) ^= (1 << (uint8_t)(bit)); } while(0)
 
 
 // --- Nibble manipulation ---
 
 // Replace nibble in a byte
-#define write_low_nibble(reg, value)  do { (reg) = ((reg) & 0xF0) | ((uint8_t)(value) & 0xF); } while(0)
-#define write_high_nibble(reg, value) do { (reg) = ((reg) & 0x0F) | (((uint8_t)(value) & 0xF) << 4); } while(0)
+#define set_low_nibble(reg, value)  do { (reg) = ((reg) & 0xF0) | ((uint8_t)(value) & 0xF); } while(0)
+#define set_high_nibble(reg, value) do { (reg) = ((reg) & 0x0F) | (((uint8_t)(value) & 0xF) << 4); } while(0)
 
-#define write_low_nibble_p(reg_p, value)  do { *(reg_p) = (*(reg_p) & 0xF0) | ((uint8_t)(value) & 0xF); } while(0)
-#define write_high_nibble_p(reg_p, value) do { *(reg_p) = (*(reg_p) & 0x0F) | (((uint8_t)(value) & 0xF) << 4); } while(0)
+#define set_low_nibble_p(reg_p, value)  do { *(reg_p) = (*(reg_p) & 0xF0) | ((uint8_t)(value) & 0xF); } while(0)
+#define set_high_nibble_p(reg_p, value) do { *(reg_p) = (*(reg_p) & 0x0F) | (((uint8_t)(value) & 0xF) << 4); } while(0)
 
 #define low_nibble(x) ((uint8_t)(x) & 0xF)
 #define high_nibble(x) (((uint8_t)(x) & 0xF0) >> 4)

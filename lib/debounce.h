@@ -16,8 +16,8 @@
 //
 //  A pin is registered like this:
 //
-//    #define BTN1 B,0
-//    #define BTN2 B,1
+//    #define BTN1 12 // pin D12
+//    #define BTN2 13
 //
 //    debo_add(BTN0);  // The function returns number assigned to the pin (0, 1, ...)
 //    debo_add_rev(BTN1);  // active low
@@ -50,9 +50,9 @@ typedef struct {
 
 debo_slot_t debo_slots[DEBO_CHANNELS];
 
-/** Add a pin for debouncing */
-#define debo_add_rev(io) debo_register(&io2pin(io_pack(io)), io2n(io_pack(io)), 1)
-#define debo_add(io)  debo_register(&io2pin(io_pack(io)), io2n(io_pack(io)), 0)
+/** Add a pin for debouncing (must be used with constant args) */
+#define debo_add_rev(pin) debo_register(&_pin(pin), _pn(pin), 1)
+#define debo_add(pin)  debo_register(&_pin(pin), _pn(pin), 0)
 
 /** Add a pin for debouncing (low level function) */
 uint8_t debo_register(PORT_P pin_reg_pointer, uint8_t bit, bool invert);

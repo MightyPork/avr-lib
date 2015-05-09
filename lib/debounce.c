@@ -3,7 +3,7 @@
 
 #include "debounce.h"
 #include "calc.h"
-#include "pins.h"
+#include "iopins.h"
 #include "debo_config.h"
 
 /** Debounce data array */
