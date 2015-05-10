@@ -7,13 +7,6 @@
 //
 //  You must provide a config file debo_config.h (next to your main.c)
 //
-//  Example:
-//    #pragma once
-//    #define DEBO_CHANNELS 2
-//    #define DDEBO_TICKS 5
-//
-//  ----
-//
 //  A pin is registered like this:
 //
 //    #define BTN1 12 // pin D12
@@ -39,7 +32,14 @@
 
 #include "calc.h"
 #include "pins.h"
+
+// Your config file
 #include "debo_config.h"
+/*
+	#define DEBO_CHANNELS 2
+	#define DDEBO_TICKS 5
+*/
+
 
 /* Internal deboucer entry */
 typedef struct {

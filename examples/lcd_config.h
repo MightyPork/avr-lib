@@ -2,12 +2,10 @@
 
 // Pin config file for LCD.
 
-#include "lib/arduino_pins.h"
-
-#define LCD_RS D2
-#define LCD_RW D3
-#define LCD_E  D4
-#define LCD_D4 D5
-#define LCD_D5 D6
-#define LCD_D6 D7
-#define LCD_D7 D8
+#define LCD_RS 2
+#define LCD_RW 3
+#define LCD_E  4
+#define LCD_D4 5
+#define LCD_D5 6
+#define LCD_D6 7
+#define LCD_D7 8

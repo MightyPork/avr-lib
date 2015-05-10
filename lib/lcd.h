@@ -7,15 +7,6 @@
 //
 //  Content can be something like this:
 //
-//    #pragma once
-//    #include "lib/arduino_pins.h"
-//    #define LCD_RS D10
-//    #define LCD_RW D11
-//    #define LCD_E  D12
-//    #define LCD_D4 D13
-//    #define LCD_D5 D14
-//    #define LCD_D6 D15
-//    #define LCD_D7 D16
 //
 
 #include <stdint.h>
@@ -23,8 +14,17 @@
 
 #include "stream.h"
 
-// File with configs
+// Your file with configs
 #include "lcd_config.h"
+/*
+	#define LCD_RS 10
+	#define LCD_RW 11
+	#define LCD_E  12
+	#define LCD_D4 13
+	#define LCD_D5 14
+	#define LCD_D6 15
+	#define LCD_D7 16
+*/
 
 
 

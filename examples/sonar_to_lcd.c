@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "lib/arduino_pins.h"
+#include "lib/iopins.h"
 #include "lib/sonar.h"
 #include "lib/stream.h"
 #include "lib/lcd.h"

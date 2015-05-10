@@ -1,7 +1,13 @@
-#include <stdlib.h>
+#include <avr/io.h>
+#include <util/delay.h>
 #include <stdint.h>
-#include "colors.h"
-#include "hsl.h"
+
+#include "iopins.h"
+#include "nsdelay.h"
+#include "color.h"
+
+
+// --- HSL ---
 
 #ifdef HSL_LINEAR
 	const uint8_t FADE_128[] = {
@@ -17,7 +23,7 @@
 #endif
 
 // based on: https://github.com/lewisd32/avr-hsl2rgb
-xrgb_t hsl2xrgb(const hsl_t cc)
+xrgb_t hsl_xrgb(const hsl_t cc)
 {
 	// 0 .. 256*3
 	const uint16_t hh = (uint16_t) cc.h * 3;

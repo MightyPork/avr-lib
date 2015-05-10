@@ -4,7 +4,6 @@
 #include <stdint.h>
 
 #include "lib/uart.h"
-#include "lib/uart_ansi.h"
 #include "lib/stream.h"
 
 //

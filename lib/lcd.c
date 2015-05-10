@@ -5,7 +5,7 @@
 #include <util/delay.h>
 
 #include "calc.h"
-#include "pins.h"
+#include "iopins.h"
 #include "nsdelay.h"
 #include "lcd.h"
 #include "lcd_config.h"
