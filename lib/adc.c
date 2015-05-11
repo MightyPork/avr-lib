@@ -23,7 +23,7 @@ void adc_disable()
 /** Sample analog pin with 8-bit precision */
 uint8_t adc_read_byte(uint8_t channel)
 {
-	write_low_nibble(ADMUX, channel);  // Select channel to sample
+	set_low_nibble(ADMUX, channel);  // Select channel to sample
 	sbi(ADMUX, ADLAR);  // Align result to left
 	sbi(ADCSRA, ADSC);  // Start conversion
 
@@ -36,7 +36,7 @@ uint8_t adc_read_byte(uint8_t channel)
 /** Sample analog pin with 10-bit precision */
 uint16_t adc_read_word(uint8_t channel)
 {
-	write_low_nibble(ADMUX, channel);  // Select channel to sample
+	set_low_nibble(ADMUX, channel);  // Select channel to sample
 	cbi(ADMUX, ADLAR);  // Align result to right
 	sbi(ADCSRA, ADSC);  // Start conversion
 

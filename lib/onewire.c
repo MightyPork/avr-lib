@@ -26,7 +26,7 @@ bool ow_reset(const uint8_t pin)
 
 
 /** Send a single bit */
-void ow_tx_bit(const uint8_t pin, const bool bit)
+void _ow_tx_bit(const uint8_t pin, const bool bit)
 {
 	as_output_n(pin);
 	pin_low_n(pin);
@@ -48,13 +48,13 @@ void ow_send(const uint8_t pin, const uint8_t byte)
 {
 	for (uint8_t i = 0; i < 8; i++)
 	{
-		ow_tx_bit(pin, (byte >> i) & 0x01);
+		_ow_tx_bit(pin, (byte >> i) & 0x01);
 	}
 }
 
 
 /** Read a single bit */
-bool ow_rx_bit(const uint8_t pin)
+bool _ow_rx_bit(const uint8_t pin)
 {
 	as_output_n(pin);
 	pin_low_n(pin);
@@ -78,7 +78,7 @@ uint8_t ow_read(const uint8_t pin)
 
 	for (uint8_t i = 0; i < 8; i++)
 	{
-		byte = (byte >> 1) | (ow_rx_bit(pin) << 7);
+		byte = (byte >> 1) | (_ow_rx_bit(pin) << 7);
 	}
 
 	return byte;
@@ -186,6 +186,7 @@ uint8_t crc8(uint8_t *addr, uint8_t len)
 
 // --- utils for DS1820 ---
 
+
 /** Read temperature in 0.0625°C, or TEMP_ERROR on error */
 int16_t ds1820_read_temp(uint8_t pin)
 {
@@ -222,3 +223,19 @@ int16_t ds1820_read_temp_c(uint8_t pin)
 	return (int16_t) temp;
 }
 
+
+bool ds1820_single_measure(uint8_t pin)
+{
+	ow_reset(pin);
+	ow_send(pin, SKIP_ROM);
+	ow_send(pin, CONVERT_T);
+
+	if(!ow_wait_ready(pin)) {
+		return false;
+	}
+
+	ow_reset(pin);
+	ow_send(pin, SKIP_ROM);
+
+	return true;
+}
