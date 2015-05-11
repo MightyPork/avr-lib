@@ -148,59 +148,59 @@ void set_pin_n(const uint8_t pin, const uint8_t v)
 	}
 }
 
-void set_low_n(const uint8_t pin)
+void pin_low_n(const uint8_t pin)
 {
 	switch(pin) {
-		case 0: set_low(0); return;
-		case 1: set_low(1); return;
-		case 2: set_low(2); return;
-		case 3: set_low(3); return;
-		case 4: set_low(4); return;
-		case 5: set_low(5); return;
-		case 6: set_low(6); return;
-		case 7: set_low(7); return;
-		case 8: set_low(8); return;
-		case 9: set_low(9); return;
-		case 10: set_low(10); return;
-		case 11: set_low(11); return;
-		case 12: set_low(12); return;
-		case 13: set_low(13); return;
-		case 14: set_low(14); return;
-		case 15: set_low(15); return;
-		case 16: set_low(16); return;
-		case 17: set_low(17); return;
-		case 18: set_low(18); return;
-		case 19: set_low(19); return;
-		case 20: set_low(20); return;
-		case 21: set_low(21); return;
+		case 0: pin_low(0); return;
+		case 1: pin_low(1); return;
+		case 2: pin_low(2); return;
+		case 3: pin_low(3); return;
+		case 4: pin_low(4); return;
+		case 5: pin_low(5); return;
+		case 6: pin_low(6); return;
+		case 7: pin_low(7); return;
+		case 8: pin_low(8); return;
+		case 9: pin_low(9); return;
+		case 10: pin_low(10); return;
+		case 11: pin_low(11); return;
+		case 12: pin_low(12); return;
+		case 13: pin_low(13); return;
+		case 14: pin_low(14); return;
+		case 15: pin_low(15); return;
+		case 16: pin_low(16); return;
+		case 17: pin_low(17); return;
+		case 18: pin_low(18); return;
+		case 19: pin_low(19); return;
+		case 20: pin_low(20); return;
+		case 21: pin_low(21); return;
 	}
 }
 
-void set_high_n(const uint8_t pin)
+void pin_high_n(const uint8_t pin)
 {
 	switch(pin) {
-		case 0: set_high(0); return;
-		case 1: set_high(1); return;
-		case 2: set_high(2); return;
-		case 3: set_high(3); return;
-		case 4: set_high(4); return;
-		case 5: set_high(5); return;
-		case 6: set_high(6); return;
-		case 7: set_high(7); return;
-		case 8: set_high(8); return;
-		case 9: set_high(9); return;
-		case 10: set_high(10); return;
-		case 11: set_high(11); return;
-		case 12: set_high(12); return;
-		case 13: set_high(13); return;
-		case 14: set_high(14); return;
-		case 15: set_high(15); return;
-		case 16: set_high(16); return;
-		case 17: set_high(17); return;
-		case 18: set_high(18); return;
-		case 19: set_high(19); return;
-		case 20: set_high(20); return;
-		case 21: set_high(21); return;
+		case 0: pin_high(0); return;
+		case 1: pin_high(1); return;
+		case 2: pin_high(2); return;
+		case 3: pin_high(3); return;
+		case 4: pin_high(4); return;
+		case 5: pin_high(5); return;
+		case 6: pin_high(6); return;
+		case 7: pin_high(7); return;
+		case 8: pin_high(8); return;
+		case 9: pin_high(9); return;
+		case 10: pin_high(10); return;
+		case 11: pin_high(11); return;
+		case 12: pin_high(12); return;
+		case 13: pin_high(13); return;
+		case 14: pin_high(14); return;
+		case 15: pin_high(15); return;
+		case 16: pin_high(16); return;
+		case 17: pin_high(17); return;
+		case 18: pin_high(18); return;
+		case 19: pin_high(19); return;
+		case 20: pin_high(20); return;
+		case 21: pin_high(21); return;
 	}
 }
 

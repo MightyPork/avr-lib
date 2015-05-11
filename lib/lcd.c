@@ -100,9 +100,9 @@ void lcd_init()
 /** Send a pulse on the ENABLE line */
 void _lcd_clk()
 {
-	set_high(LCD_E);
+	pin_high(LCD_E);
 	delay_ns(450);
-	set_low(LCD_E);
+	pin_low(LCD_E);
 }
 
 
@@ -111,7 +111,7 @@ void _lcd_mode_r()
 {
 	if (_lcd_mode == 1) return;  // already in R mode
 
-	set_high(LCD_RW);
+	pin_high(LCD_RW);
 
 	as_input_pu(LCD_D7);
 	as_input_pu(LCD_D6);
@@ -127,7 +127,7 @@ void _lcd_mode_w()
 {
 	if (_lcd_mode == 0) return;  // already in W mode
 
-	set_low(LCD_RW);
+	pin_low(LCD_RW);
 
 	as_output(LCD_D7);
 	as_output(LCD_D6);
@@ -159,7 +159,7 @@ uint8_t _lcd_read_byte()
 void lcd_command(uint8_t bb)
 {
 	_lcd_wait_bf();
-	set_low(LCD_RS);  // select instruction register
+	pin_low(LCD_RS);  // select instruction register
 	_lcd_write_byte(bb);    // send instruction byte
 }
 
@@ -186,7 +186,7 @@ void lcd_write(uint8_t bb)
 	}
 
 	_lcd_wait_bf();
-	set_high(LCD_RS);  // select data register
+	pin_high(LCD_RS);  // select data register
 	_lcd_write_byte(bb);  // send data byte
 }
 
@@ -194,7 +194,7 @@ void lcd_write(uint8_t bb)
 /** Read BF & Address */
 uint8_t lcd_read_bf_addr()
 {
-	set_low(LCD_RS);
+	pin_low(LCD_RS);
 	return _lcd_read_byte();
 }
 
@@ -204,7 +204,7 @@ uint8_t lcd_read()
 {
 	if (_addrtype == TEXT) _pos.x++;
 
-	set_high(LCD_RS);
+	pin_high(LCD_RS);
 	return _lcd_read_byte();
 }
 

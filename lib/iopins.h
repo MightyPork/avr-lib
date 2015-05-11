@@ -73,7 +73,7 @@ void    as_input_n(const uint8_t pin);
 
 
 /** Configure pin as input, with pull-up enabled */
-#define as_input_pu(pin) { as_input(pin); set_high(pin); }
+#define as_input_pu(pin) { as_input(pin); pin_high(pin); }
 void    as_input_pu_n(const uint8_t pin);
 
 
@@ -88,13 +88,13 @@ void    set_pin_n(const uint8_t pin, const uint8_t v);
 
 
 /** Write 0 to a pin */
-#define set_low(pin)    cbi( _port(pin), _pn(pin) )
-void    set_low_n(const uint8_t pin);
+#define pin_low(pin)    cbi( _port(pin), _pn(pin) )
+void    pin_low_n(const uint8_t pin);
 
 
 /** Write 1 to a pin */
-#define set_high(pin)   sbi( _port(pin), _pn(pin) )
-void    set_high_n(const uint8_t pin);
+#define pin_high(pin)   sbi( _port(pin), _pn(pin) )
+void    pin_high_n(const uint8_t pin);
 
 
 /** Toggle a pin state */

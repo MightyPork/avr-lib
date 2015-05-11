@@ -27,16 +27,16 @@ void ws_send_byte(const uint8_t bb)
 {
 	for (volatile int8_t i = 7; i >= 0; --i) {
 		if ((bb) & (1 << i)) {
-			set_high(WS_PIN);
+			pin_high(WS_PIN);
 			delay_ns_c(WS_T_1H, -2);
 
-			set_low(WS_PIN);
+			pin_low(WS_PIN);
 			delay_ns_c(WS_T_1L, -10);
 		} else {
-			set_high(WS_PIN);
+			pin_high(WS_PIN);
 			delay_ns_c(WS_T_0H, -2);
 
-			set_low(WS_PIN);
+			pin_low(WS_PIN);
 			delay_ns_c(WS_T_0L, -10);
 		}
 	}
