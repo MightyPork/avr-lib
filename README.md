@@ -1,23 +1,15 @@
-# MightyPork's AVR Library
+# "porklib", MightyPork's Arduino Library
 
-I program my Arduinos in plain C, compile it with `avr-gcc` and flash with `avrdude` (all on Linux).
+This library aims to make development for AVR in C easy and fun.
 
-Whenever I learn how to do something, I make a library file and put it here.
+Modules of the library provide facilities for pin numbering and aliasing,
+bitwise operations and accessing internal and external peripherals of the AVR.
 
-The code is tested and optimized for **ATmega328P**, which is used in most Arduinos. I use "Pro Mini" and "Nano".
+It takes some inspiration from Arduino, but is written in pure C, which makes it faster
+and smaller.
 
-# How to use
+Pull requests to add new modules are welcome, please go ahead!
 
-Link the `lib/` folder to your project, and make sure you add all lib `.c` files to your `Makefile`, so it builds are the needed code.
+## License
 
-Some library files don't have `.c`, but many do.
-
-## Useful things
-
-- To easily alias I/O pins, use `lib/pins.h`.
-- For Arduino pins, there are presets in `lib/arduino_pins.h`
-- Binary/byte manipulation utilities are in `lib/calc.h`
-- `lib/meta.h` contains some generally useful things that didn't fit elsewhere
-
-Each header file contains a comment block with explanation, which will help you understand them.
-
+The library is provided under MIT license, see the LICENSE file for more info.
