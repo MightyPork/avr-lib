@@ -25,7 +25,8 @@
 
 
 // Sonar data object
-typedef struct {
+typedef struct
+{
 	PORT_P port; // Tx PORT
 	uint8_t ntx; // Tx bit number
 	PORT_P pin;  // Rx PIN

@@ -31,7 +31,7 @@
 #include <stdbool.h>
 
 #include "calc.h"
-#include "pins.h"
+#include "iopins.h"
 
 // Your config file
 #include "debo_config.h"
@@ -42,7 +42,8 @@
 
 
 /* Internal deboucer entry */
-typedef struct {
+typedef struct
+{
 	PORT_P reg;    // pointer to IO register
 	uint8_t bit;   // bits 6 and 7 of this hold "state" & "invert" flag
 	uint8_t count; // number of ticks this was in the new state

@@ -7,7 +7,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-typedef struct {
+typedef struct
+{
 	int8_t temp;
 	int8_t rh;
 } dht11_result_t;

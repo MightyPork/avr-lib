@@ -12,7 +12,8 @@
 // Define HSL_LINEAR to get more linear brightness in hsl->rgb conversion
 
 
-typedef struct {
+typedef struct
+{
 	uint8_t r;
 	uint8_t g;
 	uint8_t b;
@@ -45,7 +46,8 @@ typedef uint32_t rgb24_t;
 
 
 // HSL data structure
-typedef struct {
+typedef struct
+{
 	uint8_t h;
 	uint8_t s;
 	uint8_t l;

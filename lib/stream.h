@@ -23,9 +23,10 @@
 #include <avr/pgmspace.h>
 
 /** Stream structure */
-typedef struct {
-	void (*tx) (uint8_t b);
-	uint8_t (*rx) (void);
+typedef struct
+{
+	void (*tx)(uint8_t b);
+	uint8_t (*rx)(void);
 } STREAM;
 
 

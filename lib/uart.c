@@ -14,9 +14,10 @@ static STREAM _uart_singleton;
 STREAM* uart;
 
 
-void _uart_init_do(uint16_t ubrr) {
+void _uart_init_do(uint16_t ubrr)
+{
 	/*Set baud rate */
-	UBRR0H = (uint8_t) (ubrr >> 8);
+	UBRR0H = (uint8_t)(ubrr >> 8);
 	UBRR0L = (uint8_t) ubrr;
 
 	// Enable Rx and Tx
@@ -76,7 +77,8 @@ uint8_t uart_rx()
 /** Send string over UART */
 void uart_puts(const char* str)
 {
-	while (*str) {
+	while (*str)
+	{
 		uart_tx(*str++);
 	}
 }
@@ -86,7 +88,8 @@ void uart_puts(const char* str)
 void uart_puts_P(const char* str)
 {
 	char c;
-	while ((c = pgm_read_byte(str++))) {
+	while ((c = pgm_read_byte(str++)))
+	{
 		uart_tx(c);
 	}
 }
@@ -96,7 +99,8 @@ void uart_puts_P(const char* str)
 void uart_flush()
 {
 	uint8_t dummy;
-	while (bit_is_high(UCSR0A, RXC0)) {
+	while (bit_is_high(UCSR0A, RXC0))
+	{
 		dummy = UDR0;
 	}
 }
@@ -115,9 +119,9 @@ void vt_goto(uint8_t x, uint8_t y)
 {
 	uart_tx(27);
 	uart_tx('[');
-	put_u8(uart, y+1); // one-based !
+	put_u8(uart, y + 1); // one-based !
 	uart_tx(';');
-	put_u8(uart, x+1);
+	put_u8(uart, x + 1);
 	uart_tx('H');
 }
 
@@ -126,7 +130,7 @@ void vt_goto_x(uint8_t x)
 {
 	uart_tx(27);
 	uart_tx('[');
-	put_u8(uart, x+1);
+	put_u8(uart, x + 1);
 	uart_tx('`');
 }
 
@@ -135,7 +139,7 @@ void vt_goto_y(uint8_t y)
 {
 	uart_tx(27);
 	uart_tx('[');
-	put_u8(uart, y+1);
+	put_u8(uart, y + 1);
 	uart_tx('d');
 }
 
@@ -149,9 +153,12 @@ void vt_move(int8_t x, int8_t y)
 
 void vt_move_x(int8_t x)
 {
-	if (x < 0) {
+	if (x < 0)
+	{
 		vt_left(-x);
-	} else {
+	}
+	else
+	{
 		vt_right(x);
 	}
 }
@@ -159,9 +166,12 @@ void vt_move_x(int8_t x)
 
 void vt_move_y(int8_t y)
 {
-	if (y < 0) {
+	if (y < 0)
+	{
 		vt_up(-y);
-	} else {
+	}
+	else
+	{
 		vt_down(y);
 	}
 }
@@ -209,13 +219,15 @@ void vt_right(uint8_t x)
 
 void vt_scroll(int8_t y)
 {
-	while (y < 0) {
+	while (y < 0)
+	{
 		uart_tx(27);
 		uart_tx('D'); // up
 		y++;
 	}
 
-	while (y > 0) {
+	while (y > 0)
+	{
 		uart_tx(27);
 		uart_tx('M'); // down
 		y--;
@@ -243,7 +255,8 @@ void vt_scroll_reset()
 
 
 
-typedef struct {
+typedef struct
+{
 	uint8_t flags;
 	uint8_t fg;
 	uint8_t bg;
@@ -293,11 +306,16 @@ void vt_attr(uint8_t attribute, bool on)
 {
 	// flags are powers of two
 	// so this can handle multiple OR'd flags
-	for(uint8_t c = 1; c <= VT_FAINT; c *= 2) {
-		if (attribute & c) {
-			if (on) {
+	for (uint8_t c = 1; c <= VT_FAINT; c *= 2)
+	{
+		if (attribute & c)
+		{
+			if (on)
+			{
 				current_style.flags |= c;
-			} else {
+			}
+			else
+			{
 				current_style.flags &= ~c;
 			}
 		}
@@ -351,27 +369,33 @@ inline void _vt_reset_attribs_do()
 /** Send commands for text attribs */
 void _vt_style_do()
 {
-	if (current_style.flags & VT_BOLD) {
+	if (current_style.flags & VT_BOLD)
+	{
 		uart_puts_P(PSTR("\x1B[1m"));
 	}
 
-	if (current_style.flags & VT_FAINT) {
+	if (current_style.flags & VT_FAINT)
+	{
 		uart_puts_P(PSTR("\x1B[2m"));
 	}
 
-	if (current_style.flags & VT_ITALIC) {
+	if (current_style.flags & VT_ITALIC)
+	{
 		uart_puts_P(PSTR("\x1B[3m"));
 	}
 
-	if (current_style.flags & VT_UNDERLINE) {
+	if (current_style.flags & VT_UNDERLINE)
+	{
 		uart_puts_P(PSTR("\x1B[4m"));
 	}
 
-	if (current_style.flags & VT_BLINK) {
+	if (current_style.flags & VT_BLINK)
+	{
 		uart_puts_P(PSTR("\x1B[5m"));
 	}
 
-	if (current_style.flags & VT_REVERSE) {
+	if (current_style.flags & VT_REVERSE)
+	{
 		uart_puts_P(PSTR("\x1B[7m"));
 	}
 }
@@ -508,7 +532,8 @@ void vt_set_key_handler(void (*handler)(uint8_t, bool))
 
 
 // state machine states
-typedef enum {
+typedef enum
+{
 	GROUND = 0,
 	ESC = 1,
 	BR = 2,
@@ -525,7 +550,8 @@ KSTATE _kstate = GROUND;
 
 void _vt_kh_abort()
 {
-	switch (_kstate) {
+	switch (_kstate)
+	{
 		case ESC:
 			_vt_kh(VK_ESC, true);
 			break;
@@ -564,9 +590,11 @@ void vt_handle_key(uint8_t c)
 {
 	if (_vt_kh == NULL) return;
 
-	switch (_kstate) {
+	switch (_kstate)
+	{
 		case GROUND:
-			switch (c) {
+			switch (c)
+			{
 				case 27:
 					_kstate = ESC;
 					break;
@@ -585,7 +613,8 @@ void vt_handle_key(uint8_t c)
 			break;  // continue to next char
 
 		case ESC:
-			switch (c) {
+			switch (c)
+			{
 				case '[':
 					_kstate = BR;
 					break; // continue to next char
@@ -603,7 +632,8 @@ void vt_handle_key(uint8_t c)
 			break;
 
 		case BR:
-			switch (c) {
+			switch (c)
+			{
 				// arrows
 				case 65:
 				case 66:
@@ -632,7 +662,8 @@ void vt_handle_key(uint8_t c)
 			break;
 
 		case O:
-			switch (c) {
+			switch (c)
+			{
 				// F keys
 				case 80:
 				case 81:
@@ -653,11 +684,14 @@ void vt_handle_key(uint8_t c)
 			}
 
 		case WAITING_TILDE:
-			if (c != '~') {
+			if (c != '~')
+			{
 				_vt_kh_abort();
 				vt_handle_key(c);
 				return;
-			} else {
+			}
+			else
+			{
 				_vt_kh(_before_wtilde, true);
 				_kstate = GROUND;
 				return;
@@ -665,13 +699,17 @@ void vt_handle_key(uint8_t c)
 	}
 
 	// wait for next key
-	if (_kstate != GROUND) {
+	if (_kstate != GROUND)
+	{
 		_delay_ms(2);
-		if (!uart_rx_ready()) {
+		if (!uart_rx_ready())
+		{
 			// abort receiving
 			_vt_kh_abort();
 
-		} else {
+		}
+		else
+		{
 			vt_handle_key(uart_rx());
 		}
 	}

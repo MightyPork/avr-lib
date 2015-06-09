@@ -23,10 +23,19 @@ void _sonar_init_do(sonar_t* so, PORT_P port, uint8_t ntx, PORT_P pin, uint8_t n
 	so->pin = pin;
 	so->nrx = nrx;
 
-	switch((const uint16_t) pin) {
-		case ((const uint16_t) &PINB): so->bank = 0; break;
-		case ((const uint16_t) &PINC): so->bank = 1; break;
-		case ((const uint16_t) &PIND): so->bank = 2; break;
+	switch ((const uint16_t) pin)
+	{
+		case ((const uint16_t) &PINB):
+			so->bank = 0;
+			break;
+
+		case ((const uint16_t) &PINC):
+			so->bank = 1;
+			break;
+
+		case ((const uint16_t) &PIND):
+			so->bank = 2;
+			break;
 	}
 }
 
@@ -56,10 +65,19 @@ bool sonar_start(sonar_t* so)
 	TCNT1 = 0;
 
 	// Set up pin change interrupt mask for the RX pin
-	switch(so->bank) {
-		case 0: sbi(PCMSK0, so->nrx); break;
-		case 1: sbi(PCMSK1, so->nrx); break;
-		case 2: sbi(PCMSK2, so->nrx); break;
+	switch (so->bank)
+	{
+		case 0:
+			sbi(PCMSK0, so->nrx);
+			break;
+
+		case 1:
+			sbi(PCMSK1, so->nrx);
+			break;
+
+		case 2:
+			sbi(PCMSK2, so->nrx);
+			break;
 	}
 
 	// send positive pulse
@@ -87,10 +105,19 @@ void _sonar_stop()
 	TCCR1B = 0;
 
 	// Disable RX pin interrupt mask
-	switch(_so->bank) {
-		case 0: PCMSK0 &= ~(1 << (_so->nrx)); break;
-		case 1: PCMSK1 &= ~(1 << (_so->nrx)); break;
-		case 2: PCMSK2 &= ~(1 << (_so->nrx)); break;
+	switch (_so->bank)
+	{
+		case 0:
+			PCMSK0 &= ~(1 << (_so->nrx));
+			break;
+
+		case 1:
+			PCMSK1 &= ~(1 << (_so->nrx));
+			break;
+
+		case 2:
+			PCMSK2 &= ~(1 << (_so->nrx));
+			break;
 	}
 
 	// Disable timer1 overflow interrupt
@@ -115,11 +142,13 @@ inline bool sonar_handle_t1ovf()
 /** Handle pin change interrupt (returns true if consumed) */
 inline bool sonar_handle_pci()
 {
-	if (!sonar_busy) {
+	if (!sonar_busy)
+	{
 		return false; // nothing
 	}
 
-	if (bit_is_high_p(_so->pin, _so->nrx)) {
+	if (bit_is_high_p(_so->pin, _so->nrx))
+	{
 		// rx is high, not our pin change event
 		return false;
 	}

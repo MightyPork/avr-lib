@@ -31,11 +31,14 @@ void _ow_tx_bit(const uint8_t pin, const bool bit)
 	as_output_n(pin);
 	pin_low_n(pin);
 
-	if (bit) {
+	if (bit)
+	{
 		_delay_us(6);
 		as_input_pu_n(pin);
 		_delay_us(64);
-	} else {
+	}
+	else
+	{
 		_delay_us(60);
 		as_input_pu_n(pin);
 		_delay_us(10);
@@ -137,7 +140,7 @@ void ow_read_arr(const uint8_t pin, uint8_t* array, const uint8_t count)
 // Dallas 1-wire 16-bit CRC calculation. Developed from Maxim Application Note 27.
 
 /** Compute a CRC16 checksum */
-uint16_t crc16( uint8_t *data, uint8_t len)
+uint16_t crc16(uint8_t *data, uint8_t len)
 {
 	uint16_t crc = 0;
 
@@ -174,7 +177,7 @@ uint8_t crc8(uint8_t *addr, uint8_t len)
 			uint8_t mix = (crc ^ inbyte) & 0x01;
 			crc >>= 1;
 			if (mix)
-					crc ^= 0x8C;
+				crc ^= 0x8C;
 
 			inbyte >>= 1;
 		}
@@ -195,9 +198,12 @@ int16_t ds1820_read_temp(uint8_t pin)
 	ow_read_arr(pin, bytes, 9);
 
 	uint8_t crc = crc8(bytes, 8);
-	if (crc != bytes[8]) {
+	if (crc != bytes[8])
+	{
 		return TEMP_ERROR;
-	} else {
+	}
+	else
+	{
 		int16_t a = ((bytes[1] << 8) | bytes[0]) >> 1;
 		a = a << 4;
 		a += (16 - bytes[6]) & 0x0F;
@@ -230,7 +236,8 @@ bool ds1820_single_measure(uint8_t pin)
 	ow_send(pin, SKIP_ROM);
 	ow_send(pin, CONVERT_T);
 
-	if(!ow_wait_ready(pin)) {
+	if (!ow_wait_ready(pin))
+	{
 		return false;
 	}
 

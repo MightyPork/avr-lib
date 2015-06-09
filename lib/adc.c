@@ -27,7 +27,7 @@ uint8_t adc_read_byte(uint8_t channel)
 	sbi(ADMUX, ADLAR);  // Align result to left
 	sbi(ADCSRA, ADSC);  // Start conversion
 
-	while(bit_is_high(ADCSRA, ADSC));  // Wait for it...
+	while (bit_is_high(ADCSRA, ADSC)); // Wait for it...
 
 	return ADCH;  // The upper 8 bits of ADC result
 }
@@ -40,7 +40,7 @@ uint16_t adc_read_word(uint8_t channel)
 	cbi(ADMUX, ADLAR);  // Align result to right
 	sbi(ADCSRA, ADSC);  // Start conversion
 
-	while(get_bit(ADCSRA, ADSC));  // Wait for it...
+	while (get_bit(ADCSRA, ADSC)); // Wait for it...
 
 	return ADCW;  // The whole ADC word (10 bits)
 }

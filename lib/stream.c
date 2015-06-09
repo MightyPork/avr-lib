@@ -12,7 +12,8 @@ static char tmpstr[20]; // buffer for number rendering
 void put_str(const STREAM *p, char* str)
 {
 	char c;
-	while ((c = *str++)) {
+	while ((c = *str++))
+	{
 		p->tx(c);
 	}
 }
@@ -21,7 +22,8 @@ void put_str(const STREAM *p, char* str)
 void put_str_P(const STREAM *p, const char* str)
 {
 	char c;
-	while ((c = pgm_read_byte(str++))) {
+	while ((c = pgm_read_byte(str++)))
+	{
 		p->tx(c);
 	}
 }
@@ -82,15 +84,22 @@ void put_i32(const STREAM *p, const int32_t num)
 /** Print number as hex */
 void _print_hex(const STREAM *p, uint8_t* start, uint8_t bytes)
 {
-	for (; bytes > 0; bytes--) {
+	for (; bytes > 0; bytes--)
+	{
 		uint8_t b = *(start + bytes - 1);
 
-		for(uint8_t j = 0; j < 2; j++) {
+		for (uint8_t j = 0; j < 2; j++)
+		{
 			uint8_t x = high_nibble(b);
+
 			b = b << 4;
-			if (x < 0xA) {
+
+			if (x < 0xA)
+			{
 				p->tx('0' + x);
-			} else {
+			}
+			else
+			{
 				p->tx('A' + (x - 0xA));
 			}
 		}
@@ -140,10 +149,13 @@ void put_u16f(const STREAM *p, const uint16_t num, const uint8_t places)
 /** Send signed int as float */
 void put_i16f(const STREAM *p, const int16_t num, const uint8_t places)
 {
-	if (num < 0) {
+	if (num < 0)
+	{
 		p->tx('-');
 		itoa(-num, tmpstr, 10);
-	} else {
+	}
+	else
+	{
 		itoa(num, tmpstr, 10);
 	}
 
@@ -162,10 +174,13 @@ void put_u32f(const STREAM *p, const uint32_t num, const uint8_t places)
 /** Send signed long as float */
 void put_i32f(const STREAM *p, const int32_t num, const uint8_t places)
 {
-	if (num < 0) {
+	if (num < 0)
+	{
 		p->tx('-');
 		ltoa(-num, tmpstr, 10);
-	} else {
+	}
+	else
+	{
 		ltoa(num, tmpstr, 10);
 	}
 
@@ -178,15 +193,17 @@ void _putnf(const STREAM *p, const uint8_t places)
 {
 	// measure text length
 	uint8_t len = 0;
-	while(tmpstr[len] != 0) len++;
+	while (tmpstr[len] != 0) len++;
 
 	int8_t at = len - places;
 
 	// print virtual zeros
-	if (at <= 0) {
+	if (at <= 0)
+	{
 		p->tx('0');
 		p->tx('.');
-		while(at <= -1) {
+		while (at <= -1)
+		{
 			p->tx('0');
 			at++;
 		}
@@ -195,8 +212,10 @@ void _putnf(const STREAM *p, const uint8_t places)
 
 	// print the number
 	uint8_t i = 0;
-	while(i < len) {
-		if (at-- == 0) {
+	while (i < len)
+	{
+		if (at-- == 0)
+		{
 			p->tx('.');
 		}
 

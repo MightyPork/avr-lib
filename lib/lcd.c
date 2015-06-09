@@ -42,12 +42,14 @@ uint8_t _lcd_read_byte();
 // 0 W, 1 R
 bool _lcd_mode;
 
-struct {
+struct
+{
 	uint8_t x;
 	uint8_t y;
 } _pos;
 
-enum {
+enum
+{
 	TEXT = 0,
 	CG = 1
 } _addrtype;
@@ -167,15 +169,18 @@ void lcd_command(uint8_t bb)
 /** Write a data byte */
 void lcd_write(uint8_t bb)
 {
-	if (_addrtype == TEXT) {
-		if (bb == '\r') {
+	if (_addrtype == TEXT)
+	{
+		if (bb == '\r')
+		{
 			// CR
 			_pos.x = 0;
 			lcd_xy(_pos.x, _pos.y);
 			return;
 		}
 
-		if (bb == '\n') {
+		if (bb == '\n')
+		{
 			// LF
 			_pos.y++;
 			lcd_xy(_pos.x, _pos.y);
@@ -227,7 +232,7 @@ void _lcd_write_byte(uint8_t bb)
 void _lcd_wait_bf()
 {
 	uint8_t d = 0;
-	while(d++ < 120 && lcd_read_bf_addr() & _BV(7))
+	while (d++ < 120 && lcd_read_bf_addr() & _BV(7))
 		_delay_us(1);
 }
 
@@ -318,7 +323,8 @@ void lcd_clear()
 void lcd_glyph(const uint8_t index, const uint8_t* array)
 {
 	lcd_addr_cg(index * 8);
-	for (uint8_t i = 0; i < 8; ++i)	{
+	for (uint8_t i = 0; i < 8; ++i)
+	{
 		lcd_write(array[i]);
 	}
 
@@ -332,7 +338,8 @@ void lcd_glyph(const uint8_t index, const uint8_t* array)
 void lcd_glyph_P(const uint8_t index, const uint8_t* array)
 {
 	lcd_addr_cg(index * 8);
-	for (uint8_t i = 0; i < 8; ++i)	{
+	for (uint8_t i = 0; i < 8; ++i)
+	{
 		lcd_write(pgm_read_byte(&array[i]));
 	}
 

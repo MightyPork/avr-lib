@@ -27,7 +27,7 @@ bool ow_wait_ready(const uint8_t pin);
 void ow_read_arr(const uint8_t pin, uint8_t* array, const uint8_t count);
 
 /** Compute a CRC16 checksum */
-uint16_t crc16( uint8_t *data, uint8_t len);
+uint16_t crc16(uint8_t *data, uint8_t len);
 
 /** Compute a CRC8 checksum */
 uint8_t crc8(uint8_t *addr, uint8_t len);
