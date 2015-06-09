@@ -1,5 +1,12 @@
 #pragma once
 
+//
+// Simple FAT16 library.
+//
+// To use it, implement BLOCKDEV functions
+// and attach them to it's instance.
+//
+
 #include <stdint.h>
 #include <stdbool.h>
 

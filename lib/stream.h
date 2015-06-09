@@ -30,6 +30,10 @@ typedef struct
 } STREAM;
 
 
+/** Send bytes to stream */
+void put_bytes(const STREAM *p, const uint8_t* str, const uint16_t len);
+
+
 /** Print string into a stream */
 void put_str(const STREAM *p, char* str);
 
