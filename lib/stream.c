@@ -18,7 +18,7 @@ void put_bytes(const STREAM *p, const uint8_t* str, const uint16_t len)
 }
 
 
-void put_str(const STREAM *p, char* str)
+void put_str(const STREAM *p, const char *str)
 {
 	char c;
 	while ((c = *str++))
@@ -40,6 +40,11 @@ void put_str_P(const STREAM *p, const char* str)
 
 static void _putnf(const STREAM *p, const uint8_t places);
 
+
+void put_c(const STREAM *p, const uint8_t c)
+{
+	p->tx(c);
+}
 
 /** Send signed int8 */
 void put_u8(const STREAM *p, const uint8_t num)

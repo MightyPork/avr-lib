@@ -99,24 +99,31 @@ typedef struct __attribute__((packed))
 	// Pointer to the FAT16 handle. (internal)
 	const FAT16* fat;
 }
-FAT16_FILE;
+FFILE;
+
+
+/**
+ * Store modified file metadata and flush it to disk.
+ */
+void ff_flush_file(FFILE* file);
+
 
 /**
  * Save a file "position" into a struct, for later restoration.
  * Cursor is also saved.
  */
-FSAVEPOS fat16_savepos(const FAT16_FILE* file);
+FSAVEPOS ff_savepos(const FFILE* file);
 
 /**
  * Restore a file from a saved position.
  */
-void fat16_reopen(FAT16_FILE* file, const FSAVEPOS* pos);
+void ff_reopen(FFILE* file, const FSAVEPOS* pos);
 
 
 /**
  * Initialize the file system - store into "fat"
  */
-bool fat16_init(const BLOCKDEV* dev, FAT16* fat);
+bool ff_init(const BLOCKDEV* dev, FAT16* fat);
 
 
 /**
@@ -124,7 +131,7 @@ bool fat16_init(const BLOCKDEV* dev, FAT16* fat);
  * The file may be invalid (eg. a volume label, deleted etc),
  * or blank (type FT_NONE) if the filesystem is empty.
  */
-void fat16_root(const FAT16* fat, FAT16_FILE* file);
+void ff_root(const FAT16* fat, FFILE* file);
 
 
 /**
@@ -134,7 +141,7 @@ void fat16_root(const FAT16* fat, FAT16_FILE* file);
  * @param fat       the FAT handle
  * @param label_out string to store the label in. Should have at least 12 bytes.
  */
-char* fat16_disk_label(const FAT16* fat, char* label_out);
+char* ff_disk_label(const FAT16* fat, char* label_out);
 
 
 // ----------- FILE I/O -------------
@@ -144,21 +151,26 @@ char* fat16_disk_label(const FAT16* fat, char* label_out);
  * Move file cursor to a position relative to file start
  * Returns false on I/O error (bad file, out of range...)
  */
-bool fat16_seek(FAT16_FILE* file, uint32_t addr);
+bool ff_seek(FFILE* file, uint32_t addr);
 
 
 /**
  * Read bytes from file into memory
  * Returns number of bytes read, 0 on error.
  */
-uint16_t fat16_read(FAT16_FILE* file, void* target, uint16_t len);
+uint16_t ff_read(FFILE* file, void* target, uint16_t len);
 
 
 /**
  * Write into file at a "seek" position.
- * "seek" cursor must be within (0..filesize)
  */
-bool fat16_write(FAT16_FILE* file, void* source, uint32_t len);
+bool ff_write(FFILE* file, const void* source, uint32_t len);
+
+
+/**
+ * Store a 0-terminated string at cursor.
+ */
+bool ff_write_str(FFILE* file, const char* source);
 
 
 /**
@@ -167,14 +179,14 @@ bool fat16_write(FAT16_FILE* file, void* source, uint32_t len);
  * file ... open directory; new file is opened into this handle.
  * name ... name of the new file, including extension
  */
-bool fat16_mkfile(FAT16_FILE* file, const char* name);
+bool ff_newfile(FFILE* file, const char* name);
 
 
 /**
  * Create a sub-directory of given name.
  * Directory is allocated and populated with entries "." and ".."
  */
-bool fat16_mkdir(FAT16_FILE* file, const char* name);
+bool ff_mkdir(FFILE* file, const char* name);
 
 
 /**
@@ -183,26 +195,26 @@ bool fat16_mkdir(FAT16_FILE* file, const char* name);
  *
  * Useful mainly for shrinking.
  */
-void fat16_resize(FAT16_FILE* file, uint32_t size);
+void set_file_size(FFILE* file, uint32_t size);
 
 
 /**
  * Delete a *FILE* and free it's clusters.
  */
-bool fat16_rmfile(FAT16_FILE* file);
+bool ff_rmfile(FFILE* file);
 
 
 /**
  * Delete an empty *DIRECTORY* and free it's clusters.
  */
-bool fat16_rmdir(FAT16_FILE* file);
+bool ff_rmdir(FFILE* file);
 
 
 /**
  * Delete a file or directory, even FT_LFN and FT_INVALID.
  * Directories are deleted recursively (!)
  */
-bool fat16_delete(FAT16_FILE* file);
+bool ff_delete(FFILE* file);
 
 
 
@@ -210,55 +222,55 @@ bool fat16_delete(FAT16_FILE* file);
 
 
 /** Go to previous file in the directory (false = no prev file) */
-bool fat16_prev(FAT16_FILE* file);
+bool ff_prev(FFILE* file);
 
 
 /** Go to next file in directory (false = no next file) */
-bool fat16_next(FAT16_FILE* file);
+bool ff_next(FFILE* file);
 
 
 /**
  * Open a subdirectory denoted by the file.
  * Provided handle changes to the first entry of the directory.
  */
-bool fat16_opendir(FAT16_FILE* dir);
+bool ff_opendir(FFILE* dir);
 
 
 /**
  * Open a parent directory. Fails in root.
  * Provided handle changes to the first entry of the parent directory.
  */
-bool fat16_parent(FAT16_FILE* file);
+bool ff_parent(FFILE* file);
 
 
 /** Jump to first file in this directory */
-void fat16_first(FAT16_FILE* file);
+void ff_first(FFILE* file);
 
 
 /**
- * Find a file with given "display name" in this directory.
+ * Find a file with given "display name" in this directory, and open it.
  * If file is found, "dir" will contain it's handle.
  * If file is NOT found, the handle points to the last entry of the directory.
  */
-bool fat16_find(FAT16_FILE* dir, const char* name);
+bool ff_open(FFILE* dir, const char* name);
 
 
 // -------- FILE INSPECTION -----------
 
 /** Check if file is a valid entry, or long-name/label/deleted */
-bool fat16_is_regular(const FAT16_FILE* file);
+bool ff_is_regular(const FFILE* file);
 
 
 /**
  * Resolve a file name, trim spaces and add null terminator.
  * Returns the passed char*, or NULL on error.
  */
-char* fat16_dispname(const FAT16_FILE* file, char* disp_out);
+char* ff_dispname(const FFILE* file, char* disp_out);
 
 
 /**
  * Convert filename to zero-padded fixed length one
  * Returns the passed char*.
  */
-char* fat16_rawname(const char* disp_in, char* raw_out);
+char* ff_rawname(const char* disp_in, char* raw_out);
 

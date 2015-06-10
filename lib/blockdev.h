@@ -50,5 +50,17 @@ typedef struct
 	 */
 	void (*rseek)(const int16_t offset);
 
+
+
+	/** Flush the data buffer if it's dirty.
+	 *
+	 * Should be called after each sequence of writes,
+	 * to avoid data loss.
+	 *
+	 * Tmplementations that do not need this should provide
+	 * a no-op function.
+	 */
+	void (*flush)(void);
+
 } BLOCKDEV;
 

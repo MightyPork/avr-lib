@@ -16,6 +16,7 @@ uint8_t dev_read();
 void dev_write(const uint8_t b);
 void dev_seek(const uint32_t addr);
 void dev_rseek(const int16_t offset);
+void dev_flush();
 
 
 /** Sector buffer */
@@ -36,7 +37,7 @@ uint16_t cursor_offs;
 
 
 /** Flush the buffer, if it's dirty */
-void sdb_flush()
+void dev_flush()
 {
 	if (buff_dirty)
 	{
@@ -49,11 +50,12 @@ void sdb_flush()
 void load_sector(const uint32_t addr)
 {
 	// do not load if already loaded
-	if (buff_valid && buff_addr == addr) {
+	if (buff_valid && buff_addr == addr)
+	{
 		return;
 	}
 
-	sdb_flush();
+	dev_flush();
 
 	// read entire sector
 	sd_read(addr, 0, buff, 0, 512);
@@ -90,8 +92,17 @@ inline void handle_cursor_ov()
 void dev_write(const uint8_t b)
 {
 	load_sector(cursor_sec);
-	buff[cursor_offs++] = b;
-	buff_dirty = true;
+
+	// dirty only if changed
+	if (buff[cursor_offs] != b)
+	{
+		buff[cursor_offs++] = b;
+		buff_dirty = true;
+	}
+	else
+	{
+		cursor_offs++;
+	}
 
 	handle_cursor_ov();
 }
@@ -158,7 +169,7 @@ void dev_rseek(const int16_t offset)
 /** Init SD card block device */
 bool sdb_init(BLOCKDEV* dev)
 {
-	if(!sd_init()) return false;
+	if (!sd_init()) return false;
 
 	dev->load = &dev_load;
 	dev->store = &dev_store;
@@ -166,6 +177,7 @@ bool sdb_init(BLOCKDEV* dev)
 	dev->write = &dev_write;
 	dev->seek = &dev_seek;
 	dev->rseek = &dev_rseek;
+	dev->flush = &dev_flush;
 
 	return true;
 }

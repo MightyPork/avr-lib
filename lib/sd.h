@@ -15,8 +15,6 @@
 
 #include "iopins.h"
 #include "spi.h"
-#include "uart.h"
-#include "stream.h"
 
 /** Init SD card on SPI */
 bool sd_init();
