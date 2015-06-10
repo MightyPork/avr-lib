@@ -45,9 +45,12 @@ bool sd_init()
 		return false; // timeout
 
 
+	// f_cpu/8 speed (-> 2 MHz)
+	SPSR |= _BV(SPI2X);
+	SPCR &= 0xFC | _BV(SPR0);
+
 	// Set block size to 512 bytes (SD card default)
 	sd_command(SD_SET_BLOCKLEN, 512);
-
 
 	return true;
 }
