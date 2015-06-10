@@ -6,7 +6,7 @@
 #include "calc.h"
 
 
-static char tmpstr[12]; // buffer for number rendering
+static char tmpstr[16]; // buffer for number rendering
 
 
 void put_bytes(const STREAM *p, const uint8_t* str, const uint16_t len)

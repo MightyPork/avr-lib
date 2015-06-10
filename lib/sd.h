@@ -29,7 +29,7 @@ bool sd_init();
  * @param arg command argument
  * @return return value on success, 0xFF if nothing received back.
  */
-uint8_t sd_command(const uint8_t cmd, const uint32_t arg);
+uint8_t sd_command(uint8_t cmd, uint32_t arg);
 
 
 /**
@@ -42,7 +42,7 @@ uint8_t sd_command(const uint8_t cmd, const uint32_t arg);
  * @param len      number of bytes to read
  * @return true on success
  */
-bool sd_read(const uint32_t sector, const uint16_t read_at, uint8_t * buffer, const uint16_t write_at, const uint16_t len);
+bool sd_read(uint32_t sector, uint16_t read_at, uint8_t * buffer, uint16_t write_at, uint16_t len);
 
 
 /**
@@ -52,4 +52,4 @@ bool sd_read(const uint32_t sector, const uint16_t read_at, uint8_t * buffer, co
  * @param buffer512 source buffer
  * @return true on success
  */
-bool sd_write(const uint32_t sector, const uint8_t * buffer512);
+bool sd_write(uint32_t sector, const uint8_t * buffer512);

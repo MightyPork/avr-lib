@@ -26,5 +26,5 @@ void spi_init();
  * @param ch the written byte
  * @return received byte
  */
-uint8_t spi_write(const uint8_t b);
+uint8_t spi_write(uint8_t b);
 

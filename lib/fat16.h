@@ -10,26 +10,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-/**
- * Abstract block device interface
- *
- * Populate this with pointers to your I/O functions.
- */
-typedef struct
-{
-	// Sequential read
-	void (*load)(void* dest, const uint16_t len);
-	// Sequential write
-	void (*store)(const void* src, const uint16_t len);
-	// Sequential byte write
-	void (*write)(const uint8_t b);
-	// Sequential byte read
-	uint8_t (*read)(void);
-	// Absolute seek
-	void (*seek)(const uint32_t);
-	// Relative seek
-	void (*rseek)(const int16_t);
-} BLOCKDEV;
+#include "blockdev.h"
 
 
 // -------------------------------
@@ -50,6 +31,15 @@ typedef enum
 	FT_SELF = '.',
 	FT_FILE = 'F'
 } FAT16_FT;
+
+
+/** "File address" for saving and restoring file */
+typedef struct
+{
+	uint16_t clu;
+	uint16_t num;
+	uint32_t cur_rel;
+} FSAVEPOS;
 
 
 // Include definitions of fully internal structs
@@ -111,9 +101,22 @@ typedef struct __attribute__((packed))
 }
 FAT16_FILE;
 
+/**
+ * Save a file "position" into a struct, for later restoration.
+ * Cursor is also saved.
+ */
+FSAVEPOS fat16_savepos(const FAT16_FILE* file);
 
-/** Initialize the file system - store into "fat" */
-void fat16_init(const BLOCKDEV* dev, FAT16* fat);
+/**
+ * Restore a file from a saved position.
+ */
+void fat16_reopen(FAT16_FILE* file, const FSAVEPOS* pos);
+
+
+/**
+ * Initialize the file system - store into "fat"
+ */
+bool fat16_init(const BLOCKDEV* dev, FAT16* fat);
 
 
 /**
@@ -127,6 +130,9 @@ void fat16_root(const FAT16* fat, FAT16_FILE* file);
 /**
  * Resolve the disk label.
  * That can be in the Boot Sector, or in the first root directory entry.
+ *
+ * @param fat       the FAT handle
+ * @param label_out string to store the label in. Should have at least 12 bytes.
  */
 char* fat16_disk_label(const FAT16* fat, char* label_out);
 
@@ -143,9 +149,9 @@ bool fat16_seek(FAT16_FILE* file, uint32_t addr);
 
 /**
  * Read bytes from file into memory
- * Returns false on I/O error (bad file, out of range...)
+ * Returns number of bytes read, 0 on error.
  */
-bool fat16_read(FAT16_FILE* file, void* target, uint32_t len);
+uint16_t fat16_read(FAT16_FILE* file, void* target, uint16_t len);
 
 
 /**

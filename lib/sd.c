@@ -1,5 +1,4 @@
 #include <avr/io.h>
-#include <avr/pgmspace.h>
 #include <util/delay.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -15,8 +14,13 @@
 #define SD_WRITE_BLOCK 0x58 // write single block
 
 
+bool sd_inited = false;
+
 bool sd_init()
 {
+	if (sd_inited) return true;
+	sd_inited = true;
+
 	uint8_t i;
 	spi_init();
 

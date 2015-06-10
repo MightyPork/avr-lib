@@ -103,7 +103,10 @@ uint32_t find_bs(const BLOCKDEV* dev)
 			// Verify that the boot sector has a valid signature mark
 			dev->seek(tmp + 510);
 			dev->load(&tmp2, 2);
-			if (tmp2 != 0xAA55) continue; // continue to next entry
+			if (tmp2 != 0xAA55)
+			{
+				continue; // continue to next entry
+			}
 
 			// return absolute MBR address
 			return tmp;
@@ -439,9 +442,12 @@ void write_file_header(FAT16_FILE* file, const char* fname_raw, const uint8_t at
 // =============== PUBLIC FUNCTION IMPLEMENTATIONS =================
 
 /** Initialize a FAT16 handle */
-void fat16_init(const BLOCKDEV* dev, FAT16* fat)
+bool fat16_init(const BLOCKDEV* dev, FAT16* fat)
 {
 	const uint32_t bs_a = find_bs(dev);
+
+	if (bs_a == 0) return false;
+
 	fat->dev = dev;
 	read_bs(dev, &(fat->bs), bs_a);
 	fat->fat_addr = bs_a + (fat->bs.reserved_sectors * 512);
@@ -449,6 +455,8 @@ void fat16_init(const BLOCKDEV* dev, FAT16* fat)
 	fat->data_addr = fat->rd_addr + (fat->bs.root_entries * 32); // entry is 32B long
 
 	fat->bs.bytes_per_cluster = (fat->bs.sectors_per_cluster * 512);
+
+	return true;
 }
 
 
@@ -522,13 +530,19 @@ bool fat16_is_regular(const FAT16_FILE* file)
 
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
-bool fat16_read(FAT16_FILE* file, void* target, uint32_t len)
+uint16_t fat16_read(FAT16_FILE* file, void* target, uint16_t len)
 {
 	if (file->cur_abs == 0xFFFF)
-		return false; // file at the end already
+		return 0; // file at the end already
 
 	if (file->cur_rel + len > file->size)
-		return false; // Attempt to read more than what is available
+	{
+		if (file->cur_rel > file->size) return 0;
+		len = file->size - file->cur_rel;
+		//return false; // Attempt to read more than what is available
+	}
+
+	const uint16_t len_orig = len;
 
 	const FAT16* fat = file->fat;
 	const BLOCKDEV* dev = fat->dev;
@@ -562,7 +576,7 @@ bool fat16_read(FAT16_FILE* file, void* target, uint32_t len)
 		len -= chunk;
 	}
 
-	return true;
+	return len_orig;
 }
 
 
@@ -1000,6 +1014,23 @@ char* fat16_rawname(const char* disp_in, char* raw_out)
 }
 
 
+FSAVEPOS fat16_savepos(const FAT16_FILE* file)
+{
+	FSAVEPOS fsp;
+	fsp.clu = file->clu;
+	fsp.num = file->num;
+	fsp.cur_rel = file->cur_rel;
+	return fsp;
+}
+
+
+void fat16_reopen(FAT16_FILE* file, const FSAVEPOS* pos)
+{
+	open_file(file->fat, file, pos->clu, pos->num);
+	fat16_seek(file, pos->cur_rel);
+}
+
+
 /** Write new file size (also to the disk). Does not allocate clusters. */
 void fat16_resize(FAT16_FILE* file, uint32_t size)
 {
@@ -1073,11 +1104,7 @@ bool fat16_rmdir(FAT16_FILE* file)
 	if (file->type != FT_SUBDIR)
 		return false; // not a subdirectory entry
 
-	const FAT16* fat = file->fat;
-
-	const uint16_t clu1 = file->clu;
-	const uint16_t num1 = file->num;
-
+	const FSAVEPOS orig = fat16_savepos(file);
 
 	// Open the subdir
 	if (!fat16_opendir(file))
@@ -1097,7 +1124,7 @@ bool fat16_rmdir(FAT16_FILE* file)
 		{
 			// Valid child file was found, aborting.
 			// reopen original file
-			open_file(fat, file, clu1, num1);
+			fat16_reopen(file, &orig);
 			return false;
 		}
 
@@ -1106,7 +1133,7 @@ bool fat16_rmdir(FAT16_FILE* file)
 	while (fat16_next(file));
 
 	// reopen original file
-	open_file(fat, file, clu1, num1);
+	fat16_reopen(file, &orig);
 
 	// and delete as ordinary file
 	delete_file_do(file);
@@ -1126,8 +1153,7 @@ bool fat16_delete(FAT16_FILE* file)
 		case FT_SUBDIR:; // semicolon needed to allow declaration after "case"
 
 			// store original file location
-			const uint16_t clu1 = file->clu;
-			const uint16_t num1 = file->num;
+			const FSAVEPOS orig = fat16_savepos(file);
 
 			// open the directory (skip "." and "..")
 			open_file(file->fat, file, file->clu_start, 2);
@@ -1139,14 +1165,14 @@ bool fat16_delete(FAT16_FILE* file)
 				{
 					// failure
 					// reopen original file
-					open_file(file->fat, file, clu1, num1);
+					fat16_reopen(file, &orig);
 					return false;
 				}
 			}
 			while (fat16_next(file));
 
 			// go up and delete the dir
-			open_file(file->fat, file, clu1, num1);
+			fat16_reopen(file, &orig);
 			return fat16_rmdir(file);
 
 		default:
@@ -1158,11 +1184,9 @@ bool fat16_delete(FAT16_FILE* file)
 
 bool fat16_parent(FAT16_FILE* file)
 {
-	const uint16_t clu1 = file->clu;
-	const uint16_t num1 = file->num;
-
 	// open second entry of the directory
 	open_file(file->fat, file, file->clu, 1);
+	const FSAVEPOS orig = fat16_savepos(file);
 
 	// if it's a valid PARENT link, follow it.
 	if (file->type == FT_PARENT)
@@ -1174,7 +1198,7 @@ bool fat16_parent(FAT16_FILE* file)
 	{
 		// in root already?
 		// reopen original file
-		open_file(file->fat, file, clu1, num1);
+		fat16_reopen(file, &orig);
 		return false;
 	}
 }

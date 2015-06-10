@@ -9,7 +9,6 @@
 /** Boot Sector structure */
 typedef struct __attribute__((packed))
 {
-
 	// Fields loaded directly from disk:
 
 	// 13 bytes skipped

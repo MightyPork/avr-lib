@@ -5,9 +5,14 @@
 #include "iopins.h"
 #include "spi.h"
 
+bool spi_inited = false;
+
 /** Init SPI (for SD card communication) */
 void spi_init()
 {
+	if (spi_inited) return;
+	spi_inited = true;
+
 	// Pin configuration
 	as_output(PIN_SS);
 	as_output(PIN_MOSI);
@@ -20,7 +25,7 @@ void spi_init()
 
 
 /** Write a byte to SPI. Returns received byte. */
-uint8_t spi_write(const uint8_t b)
+uint8_t spi_write(uint8_t b)
 {
 	SPDR = b;
 	while (!(SPSR & _BV(SPIF)));

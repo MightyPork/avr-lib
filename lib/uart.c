@@ -11,7 +11,7 @@
 
 // Shared stream instance
 static STREAM _uart_singleton;
-STREAM* uart;
+STREAM* uart = &_uart_singleton;
 
 
 void _uart_init_do(uint16_t ubrr)
@@ -28,8 +28,6 @@ void _uart_init_do(uint16_t ubrr)
 
 	_uart_singleton.tx = &uart_tx;
 	_uart_singleton.rx = &uart_rx;
-
-	uart = &_uart_singleton;
 }
 
 
