@@ -761,13 +761,20 @@ void ff_root(const FAT16* fat, FFILE* file)
 /**
  * Find a file with given "display name" in this directory.
  * If file is found, "dir" will contain it's handle.
- * Either way, "dir" gets modified and you may need to rewind it afterwards.
  */
-bool ff_open(FFILE* dir, const char* name)
+bool ff_find(FFILE* file, const char* name)
 {
+	// save orig pos
+	FSAVEPOS orig = ff_savepos(file);
+
 	char fname[11];
 	ff_rawname(name, fname);
-	return dir_find_file_raw(dir, fname);
+	bool ret = dir_find_file_raw(file, fname);
+
+	if (!ret)
+		ff_reopen(file, &orig);
+
+	return ret;
 }
 
 
@@ -819,6 +826,8 @@ bool find_empty_file_slot(FFILE* file)
 
 bool ff_newfile(FFILE* file, const char* name)
 {
+	const FSAVEPOS orig = ff_savepos(file);
+
 	// Convert filename to zero padded raw string
 	char fname[11];
 	ff_rawname(name, fname);
@@ -827,11 +836,17 @@ bool ff_newfile(FFILE* file, const char* name)
 	bool exists = dir_find_file_raw(file, fname);
 	ff_first(file); // rewind dir
 	if (exists)
+	{
+		ff_reopen(file, &orig);
 		return false; // file already exists in the dir.
+	}
 
 
 	if (!find_empty_file_slot(file))
+	{
+		ff_reopen(file, &orig);
 		return false; // error finding a slot
+	}
 
 	// Write into the new slot
 	const uint16_t newclu = alloc_cluster(file->fat);
@@ -847,6 +862,8 @@ bool ff_newfile(FFILE* file, const char* name)
  */
 bool ff_mkdir(FFILE* file, const char* name)
 {
+	const FSAVEPOS orig = ff_savepos(file);
+
 	// Convert filename to zero padded raw string
 	char fname[11];
 	ff_rawname(name, fname);
@@ -855,11 +872,16 @@ bool ff_mkdir(FFILE* file, const char* name)
 	bool exists = dir_find_file_raw(file, fname);
 	ff_first(file); // rewind dir
 	if (exists)
+	{
+		ff_reopen(file, &orig);
 		return false; // file already exusts in the dir.
+	}
 
 	if (!find_empty_file_slot(file))
+	{
+		ff_reopen(file, &orig);
 		return false; // error finding a slot
-
+	}
 
 	// Write into the new slot
 	const uint16_t newclu = alloc_cluster(file->fat);

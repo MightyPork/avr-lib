@@ -249,10 +249,10 @@ void ff_first(FFILE* file);
 
 /**
  * Find a file with given "display name" in this directory, and open it.
- * If file is found, "dir" will contain it's handle.
- * If file is NOT found, the handle points to the last entry of the directory.
+ * If file is found, "file" will contain it's handle.
+ * Otherwise, the handle is unchanged.
  */
-bool ff_open(FFILE* dir, const char* name);
+bool ff_find(FFILE* file, const char* name);
 
 
 // -------- FILE INSPECTION -----------
