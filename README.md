@@ -17,7 +17,7 @@ You can use the provided Makefile to build your project with this library.
 A project typically consists of one `main.c` file, and some `*_config.c` files where the
 library headers request it (those define eg. IO pin mapping).
 
-Adjust the Makefile to yuor needs!
+Adjust the Makefile to your needs!
 
 ## License
 
