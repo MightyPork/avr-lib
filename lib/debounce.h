@@ -29,6 +29,7 @@
 
 #include <avr/io.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #include "calc.h"
 #include "iopins.h"

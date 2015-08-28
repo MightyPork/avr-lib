@@ -7,6 +7,8 @@
 // and hides the implementation. All regular ff_* functions will work on the FFILE.
 //
 
+#include <stdint.h>
+
 #include "fat16.h"
 #include "stream.h"
 

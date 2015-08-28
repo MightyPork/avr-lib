@@ -8,6 +8,8 @@
 // Create a config file rgb_config.h next to your main.c
 //
 
+#include <stdint.h>
+
 #include "iopins.h"
 #include "color.h"
 

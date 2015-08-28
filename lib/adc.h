@@ -5,6 +5,7 @@
 //
 
 #include <avr/io.h>
+#include <stdint.h>
 
 /** Initialize the ADC */
 void adc_init();

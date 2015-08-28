@@ -4,6 +4,8 @@
 // Bit and byte manipulation utilities
 //
 
+#include <stdint.h>
+
 
 // --- Increment in range ---
 // when overflown, wraps within range. Lower bound < upper bound.
