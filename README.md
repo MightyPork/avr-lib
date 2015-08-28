@@ -12,12 +12,12 @@ Pull requests to add new modules are welcome, please go ahead!
 
 ## Makefile
 
-You can use the provided Makefile to boild your project with this library.
+You can use the provided Makefile to build your project with this library.
 
 A project typically consists of one `main.c` file, and some `*_config.c` files where the
 library headers request it (those define eg. IO pin mapping).
 
-Adjust the Makefile to yoru needs!
+Adjust the Makefile to your needs!
 
 ## License
 
