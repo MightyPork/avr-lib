@@ -10,10 +10,7 @@
 // Example of asynchronous UART key handling
 //
 // It recognizes special keys like arrows and some F keys,
-// check the header file for full list.
-//
-// You need uart_ansi for this.
-//
+// check uart.h file for full list.
 
 ISR(USART_RX_vect)
 {
@@ -27,8 +24,8 @@ ISR(USART_RX_vect)
 void key_handler(uint8_t code, bool special)
 {
 	put_str_P(uart, special ? PSTR("Special: ") : PSTR("Char: "));
-	put_char(uart, code); // the actual character
-	put_char(uart, ' '); // space
+	put_c(uart, code); // the actual character
+	put_c(uart, ' '); // space
 	put_u8(uart, code); // as number
 	put_nl(uart); // crlf
 }

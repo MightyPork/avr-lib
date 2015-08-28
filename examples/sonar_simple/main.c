@@ -9,7 +9,6 @@
 #include <stdbool.h>
 
 #include "lib/uart.h"
-#include "lib/arduino_pins.h"
 #include "lib/sonar.h"
 #include "lib/stream.h"
 
@@ -71,7 +70,6 @@ void main()
 		}
 
 		int16_t res = sonar_result;
-
 
 
 		// Print

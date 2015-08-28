@@ -30,11 +30,13 @@ LIB_DIR = lib/
 # C files in the library directory
 LIB_C_FILES = uart.c iopins.c stream.c adc.c dht11.c sonar.c onewire.c spi.c sd.c fat16.c
 
-# Extra Files that need config file:
+# C files that need  aconfig file - uncomment when needed, but also add the configs!
 
-#LIB_C_FILES += lcd.c
+LIB_C_FILES += lcd.c
+#LIB_C_FILES += sipo_pwm.c
 #LIB_C_FILES += color.c wsrgb.c
 #LIB_C_FILES += debouce.c
+
 
 LIB_H_FILES = adc.h calc.h dht11.h fat16.h fat16_internal.h iopins.h nsdelay.h onewire.h sd.h sonar.h spi.h stream.h uart.h
 LIB_H_FILES +=  lcd.h color.h wsrgb.h debounce.h

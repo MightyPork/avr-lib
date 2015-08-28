@@ -2,7 +2,6 @@
 #include <avr/pgmspace.h>
 #include <avr/interrupt.h>
 
-#include "lib/meta.h"
 #include "lib/uart.h"
 
 //
