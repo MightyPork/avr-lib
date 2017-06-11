@@ -1,3 +1,9 @@
+**This library is very old and unmaintained.**
+
+There may be some good bits worth salvaging, but for new projects I recommend the [avr-c-boilerplate](https://github.com/MightyPork/avr-c-boilerplate) as a base instead. Copy and port good modules from this library if you like.
+
+---
+
 # "porklib", MightyPork's Arduino Library
 
 This library aims to make development for AVR in C easy and fun.
